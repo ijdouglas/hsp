@@ -10,11 +10,13 @@
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-instructions.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-audio-button-response.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-html-form.js"></script>
     <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
     <script src="./consent.js"></script>
     <script src="./hsp.js"></script>
     <script src="./audio_check.js"></script>
-
+    
     </link>
 </head>
 
@@ -56,6 +58,7 @@
 
             var timeline = []
 
+            
             //////////////////////////////////
             /// Opening information slides //
             ////////////////////////////////
@@ -150,9 +153,9 @@
 
                 <p><b>You will see reminder slides between blocks. Those slides mark the beginning of a new block. That means you will need to guess a new verb for that block.</b></p>
 
-<p>You will see start the real experiment on next page.</p>
+                <p>You will see start the real experiment on next page.</p>
 
-<p>Press any key to proceed</p>`
+                <p>Press any key to proceed</p>`
             })
             for (var i = 0; i < experiment_vids.length; i++) {
                 // console.log(stimuli_set[i])
@@ -177,9 +180,33 @@
 
                 })
             }
+            
+            timeline.push({
+                type:'survey-multi-choice',
+                questions: [
+                    {prompt: "<b>Demographic Report</b><p>Please indicate your sex:", name:'Sex', options: ['Male','Female','Other','I decline to respond'], required:true, horizontal:true}
+                ]
+            })
+            timeline.push({
+                type:'survey-html-form',
+                preamble: 'Please indicate your age:',
+                html:'<input name="age" type="text" />'
+            })
+            timeline.push({
+                type:'survey-html-form',
+                preamble: 'Are you a native English speaker? If not, please enter your native language and how long you have been learning English:',
+                html:'<input name="age" type="text" />'
+            })
+            timeline.push({
+                type:'survey-multi-choice',
+                questions: [
+                    {prompt: "Please indicate your ethnicity:", name:'Ethnicity', options: ['Hispanic or Latino','Not Hispanic or Latino','I decline to Respond'], required:true, horizontal:true},
+                    {prompt: "Please indicate your race:",name:'Race',options:['American Indian or Alaskan Native','Asian','Black or African American','Native Hawaiian or Pacific Islander','White','I decline to respond'], required:true, horizontal:true},
+                    {prompt: "What is your highest level of education?",name:'Education',options:['Never finished high school or GED','High school or diploma or GED, but no college coursework','Some college, but have not completed a post-secondary degree','Associate\'s degree','Bachelor\'s degree','Bachelor\'s degree and some graduate/professional coursework', 'Completed a graduate or professional degree'],required:true, horizontal:true}
+                ]
+            })
 
-
-            timeline.push(end_block)
+            timeline.push(end_block_turk)
 
             jsPsych.data.addProperties({ subject: ID });
 
