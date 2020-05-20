@@ -92,7 +92,11 @@ var secret_word = {
 
 var completion_code = [`Remember or write down the completion code: IU200<p><b>You will be asked to enter this code in MTurk.</p></b>`];
 
+var completion_code_turk = [`<p>Thank you for your participation!</p> To help us process your payment, please write down or remember this code: <b>IU200</b><p><b>You will need to enter this code in Amazon.</p></b>`];
+
 var end = [`That's all the videos. Thank you for participating! You can close this this page now, data will be automatically save`];
+
+var end_turk = [`<p>Your data are automatically saved, please close this web page now. </p> <p>If you have not done so, please write down or remember this code: <b>IU200</b></p>Then enter it back in Amazon.`];
 
 // var end = {
 //     type: 'html-keyboard-response',
@@ -117,6 +121,13 @@ var consent_block = {
 var end_block = {
     type: "instructions",
     pages: [completion_code, end],
+    show_clickable_nav: true,
+    timing_post_trial: transitionDelay
+};
+
+var end_block_turk = {
+    type: "instructions",
+    pages: [completion_code_turk, end_turk],
     show_clickable_nav: true,
     timing_post_trial: transitionDelay
 };
