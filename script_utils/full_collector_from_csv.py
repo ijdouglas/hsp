@@ -5,7 +5,7 @@ from spellchecker import SpellChecker
 from nltk.stem import SnowballStemmer
 from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
-from datetime import date
+from datetime import datetime
 
 spell = SpellChecker()
 
@@ -15,7 +15,6 @@ lm = WordNetLemmatizer()
 
 
 dir = "c:/Users/Ellis/Desktop/Lab/hsp_results/cond9_syntax1/"
-input_data = [["subj#","trial#","target","original_guess","corrected_guess","stem","match"]]
 spaces = []
 spaces_other = []
 
@@ -96,7 +95,7 @@ def basic_corrections(guess):
         guess = "turn"
     elif guess == 'but it is fun to':
         guess = "is"
-    elif len(guess) <= 1 or guess == "idk" or guess == "im not sure" or guess == " " or guess == "i really dont know" or guess == 'no idea' or guess == "i have no clue" or guess == "not sure again" or guess == "fuck bitch" or guess == "no clue":
+    elif len(guess) <= 1 or guess == "idk" or guess == "im not sure" or guess == " " or guess == "i really dont know" or guess == 'no idea' or guess == "i have no clue" or guess == "not sure again" or guess == "no clue" or "fuck" in guess or "bitch" in guess or "ass" in guess or "cunt" in guess or "shit" in guess:
         guess = "N/A"
     replacements = [" with"," on"," top"," over"," around","to "," go"," is","it ","go ",","," into"," in"," them"," up"," knock"," stack"," blocks"," the ball"," there"," the"," it"," noise"," down for"," down"," things","\\"," off"," out"] #put inside -> putside
     for rep in replacements:
@@ -110,7 +109,6 @@ def sona_generate(dir):
         for file in files:
             if "syntax" in root and "experiment" in file:
                 temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8")))
-                #print(os.path.join(root, file))
                 for row in temp:
                     if row[0] != "rt" and len(row[9])!= 0:
                         ip = row[7]
@@ -124,7 +122,6 @@ def sona_generate(dir):
                         if " " in filename["words"][0].strip() and filename["words"][0].strip() not in spaces:
                             spaces.append([filename["words"][0],guess])
                             spaces_other.append(row)
-                            '''
                             print("they enter: ",filename["words"][0])
                             print("we corrected to: ",guess)
                             x = input("Is that correct (y/n)? ")
@@ -138,7 +135,6 @@ def sona_generate(dir):
                                 else:
                                     print("We will save: ",guess)
                             print()
-                            '''
                         is_sample = "_s_" in trial
                         if is_sample:
                             block_num = 0
@@ -149,8 +145,8 @@ def sona_generate(dir):
                             block_num = block_num +1
                         if block_num == 1:
                             block_set += 1
-                        corrected = spell.correction(guess) # no entry goes to a, a
-                        stemm = stemmer.stem(corrected) #fell vs fall, fell a tree  --- alternate to altern?
+                        corrected = spell.correction(guess)
+                        stemm = stemmer.stem(corrected) 
                         candidates = spell.candidates(guess)
                         verbs = len(wn.synsets(stemm, pos=wn.VERB))
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -164,17 +160,11 @@ def turk_generate(dir):
         for file in files:
             if "syntax" in root and "ignore" not in file and "experiment" in file:
                 temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8")))
-                #print(os.path.join(root, file))
                 for row in temp:
                     if row[0] != "rt" and len(row[11])!= 0:
-                        #print()
-                        #print(row[7])
-                        #print(row[11])
                         ip = row[7]
                         if len(row[7]) == 0:
                             ip = "undefined"
-                        #if ip not in ips:
-                        #    ips.append(ip)
                         filename = json.loads(row[11])
                         video = filename["video"]
                         trial = extract_turk_video_syntax(video)
@@ -184,7 +174,6 @@ def turk_generate(dir):
                         if " " in filename["words"][0].strip() and filename["words"][0].strip() not in spaces:
                             spaces.append([filename["words"][0],guess])
                             spaces_other.append(row)
-                            '''
                             print("they enter: ",filename["words"][0])
                             print("we corrected to: ",guess)
                             x = input("Is that correct (y/n)? ")
@@ -198,7 +187,6 @@ def turk_generate(dir):
                                 else:
                                     print("We will save: ",guess)
                             print()
-                            '''
                         is_sample = "_s_" in trial
                         if is_sample:
                             block_num = 0
@@ -209,18 +197,14 @@ def turk_generate(dir):
                             block_num = block_num +1
                         if block_num == 1:
                             block_set += 1
-                        corrected = spell.correction(guess) # no entry goes to a, a
-                        stemm = stemmer.stem(corrected) #fell vs fall, fell a tree  --- alternate to altern?
-
+                        corrected = spell.correction(guess) 
+                        stemm = stemmer.stem(corrected) 
                         candidates = spell.candidates(guess)
                         verbs = len(wn.synsets(stemm, pos=wn.VERB))
                         lemma = lm.lemmatize(corrected, wn.VERB)
-
                         input_data.append([ip,condition,trial,block_set,block_num,target,filename["words"][0],guess,int(filename["words"][0]==guess),corrected,candidates,spell.word_probability(corrected),int(guess==corrected),stemm,lemma,int(guess==stemm),int(target==stemm),int(verbs>0)])
     return input_data
 def cond45_generate(dir):
-    print("test")
-    print(dir)
     input_data = [["subj#","condition","trial#","block_set","block_num","target","original_guess","corrected_guess","og_cg_match","spell-check","candidates","wordprob","cg_sc_match","stem","lemm","cg_st_match","target_stem_match","verb_synset"]] #block #, likely verb?
     condition = dir.replace("c:/Users/Ellis/Desktop/Lab/hsp_results/","")
     condition = condition.replace("/","")
@@ -228,7 +212,6 @@ def cond45_generate(dir):
         for file in files:
             if "block" in root and "experiment" in file:
                 temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8")))
-                #print(os.path.join(root, file))
                 for row in temp:
                     if row[0] != "rt" and len(row[9])!= 0:
                         ip = row[7]
@@ -243,7 +226,6 @@ def cond45_generate(dir):
                         if " " in filename["words"][0].strip() and filename["words"][0].strip() not in spaces:
                             spaces.append([filename["words"][0],guess])
                             spaces_other.append(row)
-                            '''
                             print("they enter: ",filename["words"][0])
                             print("we corrected to: ",guess)
                             x = input("Is that correct (y/n)? ")
@@ -257,7 +239,6 @@ def cond45_generate(dir):
                                 else:
                                     print("We will save: ",guess)
                             print()
-                            '''
                         is_sample = "_s_" in trial
                         if is_sample:
                             block_num = 0
@@ -268,8 +249,8 @@ def cond45_generate(dir):
                             block_num = block_num +1
                         if block_num == 1:
                             block_set += 1
-                        corrected = spell.correction(guess) # no entry goes to a, a
-                        stemm = stemmer.stem(corrected) #fell vs fall, fell a tree  --- alternate to altern?
+                        corrected = spell.correction(guess) 
+                        stemm = stemmer.stem(corrected) 
                         candidates = spell.candidates(guess)
                         verbs = len(wn.synsets(stemm, pos=wn.VERB))
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -296,7 +277,6 @@ def baseline_generate(dir):
                         if " " in filename["words"][0].strip() and filename["words"][0].strip() not in spaces:
                             spaces.append([filename["words"][0],guess])
                             spaces_other.append(row)
-                            '''
                             print("they enter: ",filename["words"][0])
                             print("we corrected to: ",guess)
                             x = input("Is that correct (y/n)? ")
@@ -310,9 +290,8 @@ def baseline_generate(dir):
                                 else:
                                     print("We will save: ",guess)
                             print()
-                            '''
-                        corrected = spell.correction(guess) # no entry goes to a, a
-                        stemm = stemmer.stem(corrected) #fell vs fall, fell a tree  --- alternate to altern?
+                        corrected = spell.correction(guess) 
+                        stemm = stemmer.stem(corrected) 
                         candidates = spell.candidates(guess)
                         verbs = len(wn.synsets(stemm, pos=wn.VERB))
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -320,13 +299,13 @@ def baseline_generate(dir):
     return input_data
 
 def write_data(arrayed,name):
-    with open(name,"w",newline="") as f:
+    with open(name,mode="w",encoding="utf-8",newline="") as f:
         writer = csv.writer(f)
         writer.writerows(arrayed)
 
 def general_walk(root_dir):
-    today = date.today()
-    date = today.strftime("&d_%m_%Y")
+    today = datetime.today()
+    Date = today.strftime("%d-%m-%Y")
     dir = root_dir
     for root, dirs, files in os.walk(dir):
         #condition = dir.replace("c:/Users/Ellis/Desktop/Lab/hsp_results/","")
@@ -336,7 +315,7 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data = baseline_generate(root)
-                filename = "cond1_"+date+".csv"
+                filename = "cond1_"+Date+".csv"
                 write_data(data,filename)
             #    for row in data:
             #        print(row)
@@ -345,7 +324,7 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data2 = baseline_generate(root)
-                filename = "cond2_"+date+".csv"
+                filename = "cond2_"+Date+".csv"
                 write_data(data2,filename)
             #    for row in data2:
             #        print(row)
@@ -354,17 +333,16 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data3 = baseline_generate(root)
-                filename = "cond3_"+date+".csv"
+                filename = "cond3_"+Date+".csv"
                 write_data(data3,filename)
             #    for row in data3:
             #        print(row)
         elif "cond4" in root: 
             print("condition_4")
-            print(root)
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data4 = cond45_generate(root)
-                filename = "cond4_"+date+".csv"
+                filename = "cond4_"+Date+".csv"
                 write_data(data4,filename)
                 #for row in data4:
                 #    print(row)
@@ -373,14 +351,14 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data5 = cond45_generate(root)
-                filename = "cond5_"+date+".csv"
+                filename = "cond5_"+Date+".csv"
                 write_data(data5,filename)
         elif "cond7" in root:
             print("condition_7")
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data7 = baseline_generate(root)
-                filename = "cond7_"+date+".csv"
+                filename = "cond7_"+Date+".csv"
                 write_data(data7,filename)
                 #for row in data7:
                 #    print(row)
@@ -389,7 +367,7 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 data8 = baseline_generate(root)
-                filename = "cond8_"+date+".csv"
+                filename = "cond8_"+Date+".csv"
                 write_data(data8,filename)
                 #for row in data8:
                 #    print(row)
@@ -398,7 +376,7 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 sona_data = sona_generate(root)
-                filename = "cond9_sona_"+date+".csv"
+                filename = "cond9_sona_"+Date+".csv"
                 write_data(sona_data,filename)
                 #for row in sona_data:
                 #    print(row)
@@ -407,7 +385,7 @@ def general_walk(root_dir):
             x = input("run?")
             if x == "y" or x == "yes" or x == "1":
                 turk_data = turk_generate(root)
-                filename = "cond9_turk_"+date+".csv"
+                filename = "cond9_turk_"+Date+".csv"
                 write_data(turk_data,filename)
                 #for row in turk_data:
                 #    print(row)
