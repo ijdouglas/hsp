@@ -2,6 +2,10 @@ var welcome = {
     type: 'html-keyboard-response',
     stimulus: 'Welcome to the Human Simulation Paradigm for Verbs. Press any key to begin.'
 };
+var welcome2 = {
+    type: 'html-keyboard-response',
+    stimulus: 'Welcome to the human similarty judgement portion of the human simulation paradigm for verbs. Press any key to begin.'
+};
 
 var instructions = {
     type: "html-keyboard-response",

@@ -4,10 +4,15 @@
 <head>
     <title>HSP Verbs</title>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-text.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-likert.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-instructions.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-audio-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-html-form.js"></script>
     <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
     <script src="./hsp.js"></script>
     <script src="./audio_check.js"></script>
@@ -41,7 +46,7 @@
             //console.log("data test")
             //console.log(data)
             var test_word_pairs = []
-            var index_num = Math.floor((Math.random()*27)+1)
+            var index_num = Math.floor((Math.random()*23)+1)
             console.log(index_num)
             test_word_pairs.push(data[index_num]["word_pair"])
             //console.log("word pair test")
@@ -52,7 +57,7 @@
             //////////////////////////////////
             /// Opening information slides //
             ////////////////////////////////
-            timeline.push(welcome)
+            timeline.push(welcome2)
             timeline.push(instructions3)
 
             ///////////////////////////////////
@@ -85,8 +90,31 @@
 
                 })
             }
-
-            timeline.push(ask_name)
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "<b>Demographic Report</b><p>Please indicate your sex:", name: 'Sex', options: ['Male', 'Female', 'Other', 'I decline to respond'], required: true, horizontal: true }
+                ]
+            })
+            timeline.push({
+                type: 'survey-html-form',
+                preamble: 'Please indicate your age:',
+                html: '<input name="age" type="text" />'
+            })
+            timeline.push({
+                type: 'survey-html-form',
+                preamble: 'Are you a native English speaker? If not, please enter your native language and how long you have been learning English:',
+                html: '<input name="Language" type="text" />'
+            })
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "Please indicate your ethnicity:", name: 'Ethnicity', options: ['Hispanic or Latino', 'Not Hispanic or Latino', 'I decline to Respond'], required: true, horizontal: true },
+                    { prompt: "Please indicate your race:", name: 'Race', options: ['American Indian or Alaskan Native', 'Asian', 'Black or African American', 'Native Hawaiian or Pacific Islander', 'White', 'I decline to respond'], required: true, horizontal: true },
+                    { prompt: "What is your highest level of education?", name: 'Education', options: ['Never finished high school or GED', 'High school diploma or GED, but no college coursework', 'Some college, but have not completed a post-secondary degree', 'Associate\'s degree', 'Bachelor\'s degree', 'Bachelor\'s degree and some graduate/professional coursework', 'Completed a graduate or professional degree'], required: true, horizontal: true }
+                ]
+            })
+            //timeline.push(ask_name)
 //            timeline.push(secret_word)
 //            timeline.push(form_survey_reminder)
 
