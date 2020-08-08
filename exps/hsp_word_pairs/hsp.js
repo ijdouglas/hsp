@@ -4,7 +4,7 @@ var welcome = {
 };
 var welcome2 = {
     type: 'html-keyboard-response',
-    stimulus: 'Welcome to the human similarty judgement portion of the human simulation paradigm for verbs. Press any key to begin.'
+    stimulus: 'Welcome to the human similarty judgement experiment for verbs. Press any key to begin.'
 };
 
 var instructions = {
@@ -42,7 +42,7 @@ var instructions3 = {
     type: "html-keyboard-response",
     stimulus: `
     <h1>Instructions</h1>
-    <p align="justify">You will be asked to look over word pairs and give a similarity judgement. These are concrete action verbs parents likely say to their children in a toy-play context. Your job is to carefully rate the similarity of the two words on a scale from 1 to 7 (1 = Not similar at all, 7 = Almost identical).</p>
+    <p align="justify">You will be asked to look over word pairs and give a similarity judgement. Your job is to carefully rate the similarity of the two words on a scale from 1 to 7 (1 = Not similar at all, 7 = Almost identical).</p>
 
     <p align="justify">The study session will last 20 or so min, please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
 

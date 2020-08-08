@@ -46,7 +46,7 @@
             //console.log("data test")
             //console.log(data)
             var test_word_pairs = []
-            var index_num = Math.floor((Math.random()*23)+1)
+            var index_num = Math.floor((Math.random() * 23) + 1)
             console.log(index_num)
             test_word_pairs.push(data[index_num]["word_pair"])
             //console.log("word pair test")
@@ -64,7 +64,7 @@
             /// Testing word_pair stimuli section
             ///////////////////////////////////
             var scale_1 = [
-                "1","2","3","4","5","6","7"
+                "1", "2", "3", "4", "5", "6", "7"
             ]
             for (var i = 0; i < test_word_pairs[0].length; i++) {
                 //console.log("word pair:")
@@ -78,7 +78,8 @@
                     type: 'survey-likert',
                     questions: [
                         {
-                        prompt:"</p>Rate the similarity between</p> " + word1 + " and "+ word2 ,name: pair, labels: scale_1}
+                            prompt: "</p>Rate the similarity between</p> <b>" + word1 + "</b> :: <b>" + word2 + "</b>", name: pair, labels: scale_1
+                        }
                     ],
                     on_finish: function (data) {
                         console.log(data);
@@ -112,11 +113,14 @@
                     { prompt: "Please indicate your ethnicity:", name: 'Ethnicity', options: ['Hispanic or Latino', 'Not Hispanic or Latino', 'I decline to Respond'], required: true, horizontal: true },
                     { prompt: "Please indicate your race:", name: 'Race', options: ['American Indian or Alaskan Native', 'Asian', 'Black or African American', 'Native Hawaiian or Pacific Islander', 'White', 'I decline to respond'], required: true, horizontal: true },
                     { prompt: "What is your highest level of education?", name: 'Education', options: ['Never finished high school or GED', 'High school diploma or GED, but no college coursework', 'Some college, but have not completed a post-secondary degree', 'Associate\'s degree', 'Bachelor\'s degree', 'Bachelor\'s degree and some graduate/professional coursework', 'Completed a graduate or professional degree'], required: true, horizontal: true }
-                ]
+                ],
+                on_finish: function (data) {
+                    saveData(ID + "_experiment_data", jsPsych.data.get().csv());
+                }
             })
             //timeline.push(ask_name)
-//            timeline.push(secret_word)
-//            timeline.push(form_survey_reminder)
+            //            timeline.push(secret_word)
+            //            timeline.push(form_survey_reminder)
 
             timeline.push(end_words)
 
