@@ -25,7 +25,7 @@
 <script>
 
     var ID;
-
+    var num_pairs = 150;
     // get the client IP address
     var req = new XMLHttpRequest();
     req.overrideMimeType("application/json");
@@ -37,7 +37,7 @@
     req.send(null);
 
     console.log(ID)
-    fetch("data/word_pairs_symmetric_combined.json")
+    fetch("data/word_pairs_randomsample.json")
         // fetch("data/test.json")
         .then(res => res.json())
         //.then(data => stimuli_set = data.videos) //Need to remove?
@@ -45,15 +45,24 @@
         .then(data => {
             //console.log("data test")
             //console.log(data)
+            //console.log("word pair")
+            //console.log(data["word_pair"])
+            //console.log("word pair 0")
+            //console.log(data["word_pair"][0])
             var test_word_pairs = []
-            var index_num = Math.floor((Math.random() * 23) + 1)
-            console.log(index_num)
-            test_word_pairs.push(data[index_num]["word_pair"])
-            //console.log("word pair test")
-            //console.log(test_word_pairs)
+            //var index_num = Math.floor((Math.random() * 23) + 1)
+            //console.log(index_num)
+            test_word_pairs.push(data["word_pair"])
+            console.log("word pair test, before shuffling")
+            console.log(test_word_pairs)
+
+            test_word_pairs = shuffle(test_word_pairs[0])
+            test_word_pairs = test_word_pairs.slice(0,num_pairs)
+
+            console.log("word pair test, after shuffling")
+            console.log(test_word_pairs)
 
             var timeline = []
-
             //////////////////////////////////
             /// Opening information slides //
             ////////////////////////////////
@@ -66,11 +75,11 @@
             var scale_1 = [
                 "1", "2", "3", "4", "5", "6", "7"
             ]
-            for (var i = 0; i < test_word_pairs[0].length; i++) {
+            for (var i = 0; i < test_word_pairs.length; i++) {
                 //console.log("word pair:")
                 //console.log(test_word_pairs[0][i])
-                var word1 = test_word_pairs[0][i][0]
-                var word2 = test_word_pairs[0][i][1]
+                var word1 = test_word_pairs[i][0]
+                var word2 = test_word_pairs[i][1]
                 var pair = [word1, word2]
                 //var word_string = "Rate the similarity between \n " + word1 + " and "+ word2
                 //console.log(word_string)
