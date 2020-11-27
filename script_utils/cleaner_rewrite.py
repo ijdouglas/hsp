@@ -9,7 +9,7 @@ from datetime import datetime
 import pandas as pd
 import scipy.io as sio
 import numpy as np
-
+#import chinese_converter
 
 
 walk_location = "c:/Users/Ellis/Documents/FA2020/Lab/hsp_results/"
@@ -940,7 +940,8 @@ def exp205(dir,target_dir,save):
     for root, dirs, files in os.walk(dir):
         for file in files:
             if "exp205" in root and "ignore" not in file and "experiment" in file:
-                temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8")))
+                print(file)
+                temp = pd.read_csv(os.path.join(root,file), encoding="utf8")
                 source_file = os.path.join(root, file)
                 trial_id = 1
                 input_data = header()
@@ -948,10 +949,10 @@ def exp205(dir,target_dir,save):
                 cevent_guessed_word = []
                 onset = 30
                 offset = float(36.9800)
-                for row in temp:
-                    if row[0] != "rt" and len(row[11])!= 0:
+                for index, row in temp.iterrows():
+                    if len(str(row["response"])) != 3:
                         ip = file[:file.find("_")]
-                        filename = json.loads(row[11])
+                        filename = json.loads(row["response"])
                         video = filename["video"]
                         trial = video.replace("./data/global_id_ver/","")
                         trial = trial.replace("sample/","")
@@ -963,11 +964,15 @@ def exp205(dir,target_dir,save):
                             #print(trial)
                             target = unblinder(trial.strip())
                         global_id = trial.replace(".mp4","")
-                        guess = basic_corrections(filename["words"][0].strip())
+                        #guess = basic_corrections(filename["words"][0].strip())
+                        print(filename["words"])
+                        guess = (filename["words"][0]).strip()
+                        print(guess)
                         is_sample = "_s_" in trial
                         block_num = 0
                         block_set = 0
                         block_type = 0
+                        '''
                         corrected = spell.correction(guess) 
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
@@ -977,14 +982,10 @@ def exp205(dir,target_dir,save):
                             words[lemma] = 1
                         elif lemma in words and verbs>0:
                             words[lemma] = words[lemma] +1
+
                         global total_count
                         total_count = total_count + 1
-                        if target not in word_dict.keys():
-                            target_id = "999999"
-                            if target not in not_in:
-                                not_in.append(target)
-                        else:
-                            target_id = word_dict[target]
+                        
                         if lemma not in word_dict.keys():
                             lemma_id = "999999"
                             if lemma not in not_in:
@@ -993,17 +994,24 @@ def exp205(dir,target_dir,save):
                                 not_in.append(lemma)
                         else:
                             lemma_id = word_dict[lemma]
+                            '''
+                        if target not in word_dict.keys():
+                            target_id = "999999"
+                            if target not in not_in:
+                                not_in.append(target)
+                        else:
+                            target_id = word_dict[target]
                         if not is_sample:
-                            cevent_guessed_word.append([onset,offset,int(lemma_id)])
+                            cevent_guessed_word.append([onset,offset,""])
                             onset +=8.0
                             offset+=8.0
                             #if trial_id == 1:
                             #    block_type = dict_201[target]
                             instance_id = global_id[0:2]+global_id[4:-2]
                             
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0)]
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,"","","","","","",""]
                             print(full_row)
-                            slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
+                            slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,"","",""]
 
 
                             input_data.append(full_row)
