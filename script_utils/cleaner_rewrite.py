@@ -9,11 +9,12 @@ from datetime import datetime
 import pandas as pd
 import scipy.io as sio
 import numpy as np
-#import chinese_converter
-
+from hanziconv import HanziConv
 
 walk_location = "c:/Users/Ellis/Documents/FA2020/Lab/hsp_results/"
 target_dir = "c:/Users/Ellis/Desktop/"
+
+wn_target_dict = {"eat":wn.synset("eat.v.01"),"stack":wn.synset("stack.v.02"),"knock":wn.synset("knock.v.01"),"shake":wn.synset("shake.v.01"),"fit":wn.synset("fit.v.02"),"drive":wn.synset("drive.v.01"),"cut":wn.synset("cut.v.01"),"put":wn.synset("put.v.01"),"turn":wn.synset("turn.v.04"),"fall":wn.synset("fall.v.01"),"hold":wn.synset("hold.v.02")}
 
 spell = SpellChecker()
 
@@ -59,7 +60,8 @@ words_incorrect = {}
 total_count = 0
 spaces = []
 spaces_other = []
-exp12 = pd.read_csv("exp12_voc_looxcie-full_11-8.csv")
+#exp12 = pd.read_csv("exp12_voc_looxcie-full_11-8.csv")
+exp12 = pd.read_csv("video_information_11-9.csv")
 not_in = []
 block_dictionary = {"shake":1,"hold":2,"eat":3,"fall":4,"drive":5,"turn":6,"put":7,"cut":8,"fit":9,"knock":10,"stack":11}
 dict_201 = {"hold":1,"cut":2}
@@ -73,7 +75,7 @@ def unblinder(blinded):
     if "_" in blinded:
         return blinded[:blinded.find("_")]
     else:
-        return exp12.loc[(exp12["global_id_name"]==blinded) & exp12["compressed"]==1].values[0][0]
+        return exp12.loc[(exp12["global_id_name"]==blinded)].values[0][0]
 
 def blinder(unblinded):
     if ".mp4" not in unblinded:
@@ -204,7 +206,7 @@ def basic_corrections(guess):
     return guess
 
 def header():
-    return [["subj","ip","condition","trial","global_id","instance_id","trial_id","block_set","block_id","trial_in_block","target","target ID","original_guess","corrected_guess","spell-check","candidates","wordprob","guess","guess_id","target_guess_match","verb_synset"]]
+    return [["subj","ip","condition","trial","global_id","instance_id","trial_id","block_set","block_id","trial_in_block","target","target ID","original_guess","corrected_guess","spell-check","candidates","wordprob","guess","guess_id","target_guess_match","verb_synset","wn_wup"]]
 
 def slim_header():
     return [["subj","trial","global_id","instance_id","trial_id","block_set","block_id","trial_in_block","target","target_id","guess","guess_id","match"]]
@@ -419,8 +421,23 @@ def exp201(dir,target_dir,save):
                             #if trial_id == 1:
                             #    block_type = dict_201[target]
                             instance_id = global_id[0:2]+global_id[4:-2]
+                            targ_synset = wn_target_dict[target]
+                            if lemma in wn_target_dict:
+                                guess_synset = wn_target_dict[lemma]
+                            else:
+                                if len(wn.synsets(lemma, pos=wn.VERB)) != 0:
+                                    guess_synset = wn.synsets(lemma, pos=wn.VERB)[0]
+                                else:
+                                    print(lemma)
+                                    print(wn.synsets(lemma))
+                                    guess_synset = wn.synsets(lemma)[0]
+                            if lemma == "N/A":
+                                wn_wup = 999
+                            else:
+                                wn_wup = targ_synset.wup_similarity(guess_synset)
 
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0)]
+
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),wn_wup]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
 
@@ -925,6 +942,7 @@ def exp204(dir,target_dir, save):
 
 def exp205(dir,target_dir,save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
+    print("does not work with gitbash cli")
     folder_holder = "experiment_205/"
     filtered_lean = slim_header()
     filtered_full = header()
@@ -940,8 +958,9 @@ def exp205(dir,target_dir,save):
     for root, dirs, files in os.walk(dir):
         for file in files:
             if "exp205" in root and "ignore" not in file and "experiment" in file:
-                print(file)
-                temp = pd.read_csv(os.path.join(root,file), encoding="utf8")
+                #print(file)
+                temp = pd.read_csv(os.path.join(root,file))
+                #print(temp["response"])
                 source_file = os.path.join(root, file)
                 trial_id = 1
                 input_data = header()
@@ -950,11 +969,12 @@ def exp205(dir,target_dir,save):
                 onset = 30
                 offset = float(36.9800)
                 for index, row in temp.iterrows():
-                    if len(str(row["response"])) != 3:
+                    if len(str(row["response"])) > 3 :
+                        #print(json.loads(row["response"])["words"])
                         ip = file[:file.find("_")]
                         filename = json.loads(row["response"])
                         video = filename["video"]
-                        trial = video.replace("./data/global_id_ver/","")
+                        trial = video.replace("./data/global_id/","")
                         trial = trial.replace("sample/","")
                         #print(trial)
                         if "_" in trial:
@@ -965,13 +985,13 @@ def exp205(dir,target_dir,save):
                             target = unblinder(trial.strip())
                         global_id = trial.replace(".mp4","")
                         #guess = basic_corrections(filename["words"][0].strip())
-                        print(filename["words"])
-                        guess = (filename["words"][0]).strip()
-                        print(guess)
+                        guess = (filename["words"][0])
+                        #print(guess)
                         is_sample = "_s_" in trial
                         block_num = 0
                         block_set = 0
                         block_type = 0
+                        
                         '''
                         corrected = spell.correction(guess) 
                         stemm = stemmer.stem(corrected)
@@ -1002,15 +1022,31 @@ def exp205(dir,target_dir,save):
                         else:
                             target_id = word_dict[target]
                         if not is_sample:
+                            print()
+                            print("verb:")
+                            simp_guess = HanziConv.toSimplified(guess).strip()
+                            print(simp_guess)
+                            print(wn.synsets(simp_guess, lang="cmn"))
+                            print(wn.synsets(simp_guess, lang = "cmn", pos=wn.VERB))
+                            if len(wn.synsets(simp_guess, lang = "cmn", pos=wn.VERB)) != 0:
+                                zh_synset = wn.synsets(simp_guess, lang="cmn", pos=wn.VERB)[0]
+                                print(target)
+                                #print(wn.synsets(target, pos=wn.VERB))
+                                en_synset = wn_target_dict[target]
+                                print(en_synset)
+                                wn_wup = en_synset.wup_similarity(zh_synset)
+                            else:
+                                wn_wup = 999
+                            print(wn_wup)
                             cevent_guessed_word.append([onset,offset,""])
                             onset +=8.0
                             offset+=8.0
                             #if trial_id == 1:
                             #    block_type = dict_201[target]
                             instance_id = global_id[0:2]+global_id[4:-2]
-                            
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,"","","","","","",""]
-                            print(full_row)
+                            verbs = len(wn.synsets(simp_guess, lang="cmn", pos=wn.VERB))
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,"","","","","","",int(verbs>0),wn_wup]
+                            #print(full_row)
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,"","",""]
 
 
@@ -1018,11 +1054,12 @@ def exp205(dir,target_dir,save):
 
                             slim_data.append(slim_row)
                             trial_id+=1
+
                 info = {"timestamp":datetime.today().strftime("%d-%m-%Y %H:%M:%S"), "subject":subject,"path":source_file,"hostname":"laptop","user":"user"}
                 inner_structure = {"variable":"cevent_guessed-word","data":cevent_guessed_word,"info":info}
                 final_structure = {"sdata":inner_structure}
                 #print(subject)
-                subj_folder = "subject_"+"{:03}".format(int(subject)-203000)
+                subj_folder = "subject_"+"{:03}".format(int(subject)-205000)
                 #print(target_dir)
                 #print(subj_folder)
                 given = ""
