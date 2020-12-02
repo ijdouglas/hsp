@@ -11,8 +11,8 @@ import scipy.io as sio
 import numpy as np
 from hanziconv import HanziConv
 
-walk_location = "c:/Users/Ellis/Documents/FA2020/Lab/hsp_results/"
-target_dir = "c:/Users/Ellis/Desktop/"
+walk_location = "/home/josef-k/lab/exp_data/"
+target_dir = "/home/josef-k/lab/proc_data/"
 
 wn_target_dict = {"eat":wn.synset("eat.v.01"),"stack":wn.synset("stack.v.02"),"knock":wn.synset("knock.v.01"),"shake":wn.synset("shake.v.01"),"fit":wn.synset("fit.v.02"),"drive":wn.synset("drive.v.01"),"cut":wn.synset("cut.v.01"),"put":wn.synset("put.v.01"),"turn":wn.synset("turn.v.04"),"fall":wn.synset("fall.v.01"),"hold":wn.synset("hold.v.02")}
 
@@ -257,7 +257,7 @@ def exp200(dir,target_dir, save):
                         block_num = 0
                         block_set = 0
                         block_type = 0
-                        corrected = spell.correction(guess) 
+                        corrected = spell.correction(guess)
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -287,7 +287,7 @@ def exp200(dir,target_dir, save):
                             onset +=8.0
                             offset+=8.0
                             instance_id = global_id[0:2]+global_id[4:-2]
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0)]
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),""]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
 
@@ -338,7 +338,7 @@ def exp200(dir,target_dir, save):
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-            
+
     filt_full = target_dir+"exp200_full_filt_"+Date+".csv"
     write_data(filtered_full, filt_full)
 
@@ -384,7 +384,7 @@ def exp201(dir,target_dir,save):
                         trial = extract_baseline_video(video)
                         target = trial[:trial.find("_")]
                         guess = basic_corrections(filename["words"][0].strip())
-                        corrected = spell.correction(guess) 
+                        corrected = spell.correction(guess)
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -422,21 +422,20 @@ def exp201(dir,target_dir,save):
                             #    block_type = dict_201[target]
                             instance_id = global_id[0:2]+global_id[4:-2]
                             targ_synset = wn_target_dict[target]
-                            if lemma in wn_target_dict:
+                            if lemma == "N/A":
+                                wn_wup = 999
+                            elif lemma in wn_target_dict:
                                 guess_synset = wn_target_dict[lemma]
+                                wn_wup = targ_synset.wup_similarity(guess_synset)
                             else:
                                 if len(wn.synsets(lemma, pos=wn.VERB)) != 0:
                                     guess_synset = wn.synsets(lemma, pos=wn.VERB)[0]
+                                    wn_wup = targ_synset.wup_similarity(guess_synset)
                                 else:
                                     print(lemma)
                                     print(wn.synsets(lemma))
                                     guess_synset = wn.synsets(lemma)[0]
-                            if lemma == "N/A":
-                                wn_wup = 999
-                            else:
-                                wn_wup = targ_synset.wup_similarity(guess_synset)
-
-
+                                    wn_wup = targ_synset.wup_similarity(guess_synset)
                             full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),wn_wup]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
@@ -489,7 +488,7 @@ def exp201(dir,target_dir,save):
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-            
+
     filt_full = target_dir+"exp201_full_filt_"+Date+".csv"
     write_data(filtered_full, filt_full)
 
@@ -536,7 +535,7 @@ def exp202(dir,target_dir,save):
                         trial = extract_cond45_video(video)
                         target = trial[:trial.find("_")]
                         guess = basic_corrections(filename["words"][0].strip())
-                        corrected = spell.correction(guess) 
+                        corrected = spell.correction(guess)
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -588,12 +587,12 @@ def exp202(dir,target_dir,save):
                             offset+=8.0
                             instance_id = global_id[0:2]+global_id[4:-2]
 
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_dictionary[target],block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0)]
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_dictionary[target],block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),""]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_dictionary[target],block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
 
                             input_data.append(full_row)
-                        
+
                             slim_data.append(slim_row)
                             trial_id+=1
                 info = {"timestamp":datetime.today().strftime("%d-%m-%Y %H:%M:%S"), "subject":subject,"path":source_file,"hostname":"laptop","user":"user"}
@@ -642,7 +641,7 @@ def exp202(dir,target_dir,save):
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-            
+
     filt_full = target_dir+"exp202_full_filt_"+Date+".csv"
     write_data(filtered_full, filt_full)
 
@@ -700,7 +699,7 @@ def exp203(dir,target_dir,save):
                         block_num = 0
                         block_set = 0
                         block_type = 0
-                        corrected = spell.correction(guess) 
+                        corrected = spell.correction(guess)
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -733,7 +732,7 @@ def exp203(dir,target_dir,save):
                             #    block_type = dict_201[target]
                             instance_id = global_id[0:2]+global_id[4:-2]
 
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0)]
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),""]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
 
@@ -786,7 +785,7 @@ def exp203(dir,target_dir,save):
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-            
+
     filt_full = target_dir+"exp203_full_filt_"+Date+".csv"
     write_data(filtered_full, filt_full)
 
@@ -798,7 +797,7 @@ def exp203(dir,target_dir,save):
 
     unfilt_lean =target_dir+"exp203_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
-    
+
 def exp204(dir,target_dir, save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
     folder_holder = "experiment_204/"
@@ -840,7 +839,7 @@ def exp204(dir,target_dir, save):
                             block_num = 1
                         else:
                             block_num = block_num +1
-                        corrected = spell.correction(guess) 
+                        corrected = spell.correction(guess)
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -875,7 +874,7 @@ def exp204(dir,target_dir, save):
                                 elif block_dictionary[target] == 3:
                                     block_type = 2
                             instance_id = global_id[0:2]+global_id[4:-2]
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_dictionary[target],block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0)]
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_dictionary[target],block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),""]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_dictionary[target],block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
 
@@ -927,7 +926,7 @@ def exp204(dir,target_dir, save):
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-            
+
     filt_full = target_dir+"exp204_full_filt_"+Date+".csv"
     write_data(filtered_full, filt_full)
 
@@ -991,9 +990,9 @@ def exp205(dir,target_dir,save):
                         block_num = 0
                         block_set = 0
                         block_type = 0
-                        
+
                         '''
-                        corrected = spell.correction(guess) 
+                        corrected = spell.correction(guess)
                         stemm = stemmer.stem(corrected)
                         candidates = spell.candidates(guess)
                         lemma = lm.lemmatize(corrected, wn.VERB)
@@ -1005,7 +1004,7 @@ def exp205(dir,target_dir,save):
 
                         global total_count
                         total_count = total_count + 1
-                        
+
                         if lemma not in word_dict.keys():
                             lemma_id = "999999"
                             if lemma not in not_in:
@@ -1099,7 +1098,7 @@ def exp205(dir,target_dir,save):
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-            
+
     filt_full = target_dir+"exp205_full_filt_"+Date+".csv"
     write_data(filtered_full, filt_full)
 
@@ -1207,7 +1206,7 @@ def update_dict(not_in, maxx):
     for key in word_dict:
         new_dict.append([key,word_dict[key]])
     write_data(new_dict,"hsp_voc.csv")
-    
+
 
 general_walk(walk_location)
 for row in problems:
