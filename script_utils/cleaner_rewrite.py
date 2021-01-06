@@ -11,8 +11,13 @@ import scipy.io as sio
 import numpy as np
 from hanziconv import HanziConv
 
-walk_location = "/home/josef-k/lab/exp_data/"
-target_dir = "/home/josef-k/lab/proc_data/"
+system = input("what system are you using? (1=windows, 2=linux) ")
+if int(system) == 1:
+    walk_location = "C:/Users/wkw/Documents/Lab/hsp_data/"
+    target_dir = "C:/Users/wkw/Desktop/"
+elif int(system) == 2:
+    walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
+    target_dir = "/mnt/c/Users/wkw/Desktop/"
 
 wn_target_dict = {"eat":wn.synset("eat.v.01"),"stack":wn.synset("stack.v.02"),"knock":wn.synset("knock.v.01"),"shake":wn.synset("shake.v.01"),"fit":wn.synset("fit.v.02"),"drive":wn.synset("drive.v.01"),"cut":wn.synset("cut.v.01"),"put":wn.synset("put.v.01"),"turn":wn.synset("turn.v.04"),"fall":wn.synset("fall.v.01"),"hold":wn.synset("hold.v.02")}
 
@@ -153,6 +158,16 @@ def basic_corrections(guess):
         guess = "eat"
     elif guess == "h old":
         guess = "hold"
+    elif guess == "scatch":
+        guess = "scratch"
+    elif guess == "squeez":
+        guess = "squeeze"
+    elif guess == "ress":
+        guess = "press"
+    elif guess == "anwer":
+        guess = "answer"
+    elif guess == "talke":
+        guess = "talk"
     elif guess == "playplay":
         guess = "play"
     elif guess == "busses":
@@ -162,14 +177,14 @@ def basic_corrections(guess):
     elif guess == "car rev":
         guess = "rev"
     elif guess == "gallo[":
-        guess = "fall"
+        guess = "gallop"
     elif guess == "spinn":
         guess = "spin"
     elif guess == "hangup":
         guess = "hang"
     elif guess == "pickup":
         guess = "pick"
-    elif len(guess) <= 1 or guess in filters or "fuck" in guess or "bitch" in guess or "ass" in guess or "cunt" in guess or "shit" in guess:
+    elif len(guess) <= 1 or guess in filters or "fuck" in guess or "bitch" in guess or "ass" == guess or "cunt" in guess or "shit" in guess:
         guess = "N/A"
     elif (len(guess) == 2 or len(guess) == 3) and guess not in short_verbs:
         guess = "N/A"
@@ -274,6 +289,8 @@ def exp200(dir,target_dir, save):
                                 not_in.append(target)
                         else:
                             target_id = word_dict[target]
+                        if lemma == "na":
+                            lemma = "N/A"
                         if lemma not in word_dict.keys():
                             lemma_id = "999999"
                             if lemma not in not_in:
