@@ -152,6 +152,14 @@ def basic_corrections(guess):
         guess = "hold"
     elif guess == "trun":
         guess = "turn"
+    elif guess == "rolla":
+        guess = "roll"
+    elif guess == "askin":
+        guess = "ask"
+    elif guess == "dres":
+        guess = "dress"
+    elif guess == "drie":
+        guess = "drive"
     elif guess == 'but it is fun to':
         guess = "is"
     elif guess == "ea t":
@@ -295,7 +303,7 @@ def exp200(dir,target_dir, save):
                             lemma_id = "999999"
                             if lemma not in not_in:
                                 print(filename["words"][0].strip())
-                                print(lemma)
+                                print(guess, lemma)
                                 not_in.append(lemma)
                         else:
                             lemma_id = word_dict[lemma]
@@ -419,6 +427,8 @@ def exp201(dir,target_dir,save):
                                 not_in.append(target)
                         else:
                             target_id = word_dict[target]
+                        if lemma == "na":
+                            lemma = "N/A"
                         if lemma not in word_dict.keys():
                             lemma_id = "999999"
                             if lemma not in not_in:
@@ -579,6 +589,8 @@ def exp202(dir,target_dir,save):
                                 not_in.append(target)
                         else:
                             target_id = word_dict[target]
+                        if lemma == "na":
+                            lemma = "N/A"
                         if lemma not in word_dict.keys():
                             lemma_id = "999999"
                             if lemma not in not_in:
@@ -727,6 +739,8 @@ def exp203(dir,target_dir,save):
                             words[lemma] = words[lemma] +1
                         global total_count
                         total_count = total_count + 1
+                        if lemma == "na":
+                            lemma = "N/A"
                         if target not in word_dict.keys():
                             target_id = "999999"
                             if target not in not_in:
@@ -867,6 +881,8 @@ def exp204(dir,target_dir, save):
                             words[lemma] = words[lemma] +1
                         global total_count
                         total_count = total_count + 1
+                        if lemma == "na":
+                            lemma = "N/A"
                         if target not in word_dict.keys():
                             target_id = "999999"
                             if target not in not_in:
@@ -1229,9 +1245,11 @@ general_walk(walk_location)
 for row in problems:
     print(row)
 
-'''
+
 print()
 if len(not_in) != 0:
-    print("updating")
-    update_dict(not_in, maxx)
-    '''
+    print(not_in)
+    x = input("Should the dict be updated? (y for yes): ")
+    if x == "y":
+        update_dict(not_in, maxx)
+
