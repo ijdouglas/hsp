@@ -49,6 +49,29 @@ var instructions3 = {
     <p><b><i>Press any key to begin.</i></b></p>`
 };
 
+var instructions_simlex = {
+    type: "html-keyboard-response",
+    stimulus: `
+    <h1>Instructions</h1>
+    <p align="justify">Two words are synonyms if they have very similar meanings. Synonyms represent the same type or category of thing. Here are some examples of synonym pairs:</p>
+    <p>[jump, bounce] </p>
+    <p>[sleep, doze] </p>
+
+    <p align="justify">In practice, word pairs that are not exactly synonymous may still be very similar. Here are some very similar pairs - we could say they are nearly synonyms:</p>
+    <p>[run, gallop] </p>
+    <p>[love, affection] </p>
+
+    <p align="justify">In contrast, although the following word pairs are related, they are not very similar. The words represent entirely different types of thing:</p>
+    <p>[fill, drink] </p>
+    <p>[car, gas] </p>
+
+    <p align="justify">In this survey, you will be asked to compare verb pairs and rate how similar they are on a scale of 1 to 7 (1 as not similar, 7 as near identical). Please remember, things that are related are not necessarily similar.</p>
+
+    <p align="justify">The study session will last 20 or so min, please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
+
+    <p><b><i>Press any key to begin.</i></b></p>`
+};
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * i)

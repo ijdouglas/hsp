@@ -25,7 +25,7 @@
 <script>
 
     var ID;
-    var num_pairs = 150;
+    //var num_pairs = 150;
     // get the client IP address
     var req = new XMLHttpRequest();
     req.overrideMimeType("application/json");
@@ -37,7 +37,7 @@
     req.send(null);
 
     console.log(ID)
-    fetch("data/word_pairs_randomsample.json")
+    fetch("data/word_pairs_YA_full.json")
         // fetch("data/test.json")
         .then(res => res.json())
         //.then(data => stimuli_set = data.videos) //Need to remove?
@@ -56,18 +56,18 @@
             console.log("word pair test, before shuffling")
             console.log(test_word_pairs)
 
-            test_word_pairs = shuffle(test_word_pairs[0])
-            test_word_pairs = test_word_pairs.slice(0,num_pairs)
+            //test_word_pairs = shuffle(test_word_pairs[0])
+            //test_word_pairs = test_word_pairs.slice(0,num_pairs)
 
-            console.log("word pair test, after shuffling")
-            console.log(test_word_pairs)
+            //console.log("word pair test, after shuffling")
+            //console.log(test_word_pairs)
 
             var timeline = []
             //////////////////////////////////
             /// Opening information slides //
             ////////////////////////////////
             timeline.push(welcome2)
-            timeline.push(instructions3)
+            timeline.push(instructions_simlex)
 
             ///////////////////////////////////
             /// Testing word_pair stimuli section
