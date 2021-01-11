@@ -4,7 +4,8 @@ var welcome = {
 };
 var welcome2 = {
     type: 'html-keyboard-response',
-    stimulus: 'Welcome to the human similarty judgement experiment for verbs. Press any key to begin.'
+    stimulus: 'Welcome to the verb similarity judgement experiment'+
+    "<p><b><i>Press any key to begin</i></b></p>"
 };
 
 var instructions = {
@@ -111,7 +112,7 @@ var end = {
 };
 var end_words = {
     type: 'html-keyboard-response',
-    stimulus: "That's all the word pairs. Thank you for participating! You can close this this page now, data will be automatically saved"
+    stimulus: "<p>That's all the word pairs. Thank you for your participation!</p><p> To help us process your payment, please write down or remember this code: <b>IU200</b><p><b>You will need to enter this code in Amazon</b></p><p> You can close this this page now, data will be automatically saved</p>"
 };
 
 function baseName(str) {
