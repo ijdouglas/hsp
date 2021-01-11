@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<head>
+    <title>HSP Verbs</title>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-text.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-instructions.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-audio-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-html-form.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+    <script src="./consent.js"></script>
+    <script src="./hsp.js"></script>
+    <script src="./audio_check.js"></script>
+
+    </link>
+</head>
+
+<body></body>
+
+<script>
+    // console.log(jsPsych.ALL_KEYS)
+    var ID;
+
+    var num_vids = 50;
+
+    // get the client IP address
+    var req = new XMLHttpRequest();
+    req.overrideMimeType("application/json");
+    req.open('GET', 'https://jsonip.com', false);
+    req.onload = function () {
+        var jsonResponse = JSON.parse(req.responseText);
+        ID = jsonResponse["ip"].replace(new RegExp(':', 'g'), "-")
+    };
+    req.send(null);
+    var curr_time = Date.now();
+    console.log("date")
+    console.log(curr_time)
+    console.log(ID)
+    fetch("data/baseline_retest_order2_gid.json")
+        // fetch("data/test.json")
+        .then(res => res.json())
+        .then(data => stimuli_set = data.videos)
+        // .then(() => console.log(stimuli_set))
+        .then(() => {
+
+            var training_vids = []
+            var experiment_vids = []
+
+            // separate training videos from experimental videos
+            for (var i = 0; i < stimuli_set.length; i++) {
+                if (stimuli_set[i].search("sample") != -1) {
+                    training_vids.push(stimuli_set[i])
+                } else {
+                    experiment_vids.push(stimuli_set[i])
+                }
+            }
+
+            // console.log(experiment_vids)
+            // experiment_vids.slice(0, 10).forEach(x => console.log(x))
+
+            // experiment_vids = shuffle(experiment_vids)
+
+            // experiment_vids.slice(0, 10).forEach(x => console.log(x))
+            // experiment_vids = experiment_vids.slice(0, num_vids)
+
+            // console.log(experiment_vids)
+
+            var timeline = []
+
+
+            //////////////////////////////////
+            /// Opening information slides //
+            ////////////////////////////////
+            timeline.push(welcome_ch)
+
+            timeline.push(consent)
+            timeline.push(instruct_block_baseline_ch)
+
+            ////////////////////////////
+            /// Audio check section  //
+            //////////////////////////
+            timeline.push({
+                type: 'html-keyboard-response',
+                stimulus: `
+                <h1>音量檢查</h1>
+                <p>接下來您會聽到一個詞，請您選擇所聼到的詞。</p><p><b>請確定耳機或喇叭已打開。</p><p>請按任何按鍵測試聲音</p>`
+            })
+
+            var audio_check1 = {
+                type: 'audio-button-response-custom',
+                stimulus: 'data/audio_check/elephant_zh.mp3',
+                choices: ['猴子', '大象', "暴風", "草莓", ",書本", ",汽車"],
+                prompt: "<p>請選出聽到的詞</p>"
+            };
+
+
+            timeline.push(audio_check1)
+
+
+            //////////////////////////////////////
+            /// Training video stimuli section //
+            ///////////////////////////////////
+
+            timeline.push({
+                type: 'html-keyboard-response',
+                stimulus: `
+            <h1>猜動詞練習部分</h1>
+            <p align="justify">接下來您會看到四個影片範例。請在影片下面的文字框內輸入您所猜測的動詞。填完之後，您會看到準確答案。
+            </p>請注意：
+            <br>
+            <li>您所猜測的動詞為描述具體動作的動詞（像“跳”和“鼓掌”）</li>
+            <li>您必須在一分鐘之内輸入答案。</li>
+            <li>若不確定，請輸入最有可能的答案。</li>
+
+            <p>影片範例將會出現在下一頁</p>
+
+            <p>請摁任何按鍵開始實驗</p>`
+            })
+
+            for (var i = 0; i < training_vids.length; i++) {
+                fname = baseName(training_vids[i])
+                word = fname.split("_")[0]
+                timeline.push({
+                    type: 'hsp-free-response',
+                    trial_duration: 60000,
+                    sources: [training_vids[i]],
+                    num_responses: 1,
+                    width: 550,
+                    question: {
+                        prompt: "最有可能的動詞：",
+                        placeholder: ""
+                    },
+                    data: {
+                        word: word
+                    }
+                })
+
+                timeline.push({
+                    type: 'html-keyboard-response',
+                    stimulus: function () {
+                        let corr = jsPsych.data.getLastTrialData().last(1).values()[0].word;
+                        let wordmap = { 'drive': '駕駛', 'eat': '吃', 'press': '按', 'put': '放' }
+                        return `
+                                    <p>正確答案是：<b>${wordmap[corr]}</b></p> 
+                                    <p>您所輸入的動詞是：<b>${JSON.parse(jsPsych.data.getLastTrialData().select("response").values[0]).words[0]}</b></p>
+                                    <p>請摁任何按鍵繼續</p>`
+                    },
+                })
+            }
+
+
+
+            ///////////////////////////////////
+            /// Testing video stimuli section
+            ///////////////////////////////////
+            timeline.push({
+                type: 'html-keyboard-response',
+                stimulus: `
+                            <h1>實驗開始</h1>
+                            <p align="justify">接下來實驗正式開始。請在影片下面的文字框內輸入您所猜測的動詞。 </p>
+                            提醒：
+            <br>
+            <li>您所猜測的動詞為描述具體動作的動詞（像“跳”和“鼓掌”）</li>
+            <li>您必須在二十秒之内輸入答案。</li>
+            <li>若不確定，請輸入最有可能的答案。</li>
+            <li>在正式實驗中，您將不會得到正確的答案</li>
+
+            <p>正式實驗將從下一頁開始</p>
+
+            <p>請摁任何按鍵開始實驗</p>`
+            })
+            for (var i = 0; i < experiment_vids.length; i++) {
+                // console.log(stimuli_set[i])
+                // if (i % 6 === 0) {
+                //     timeline.push(start_new_block)
+                // }
+                timeline.push({
+                    type: 'hsp-free-response',
+                    sources: [experiment_vids[i]],
+                    num_responses: 1,
+                    width: 550,
+                    trial_duration: 25000,
+                    question: {
+                        prompt: "最有可能的動詞：",
+                        placeholder: ""
+                    },
+                    // on_finish: function () { saveData(ID + "_experiment_data", jsPsych.data.get().csv()); }
+                    on_finish: function (data) {
+                        saveData(ID + "_" + curr_time + "_experiment_data", jsPsych.data.get().csv());
+                    },
+
+
+                })
+            }
+
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "<b>個人資訊</b><p>請選擇您的性別：", name: 'Sex', options: ['男性', '女性', ' 其他', '不回答'], required: true, horizontal: true }
+                ]
+            })
+            timeline.push({
+                type: 'survey-html-form',
+                preamble: '請輸入您的年齡:',
+                html: '<input name="age" type="text" />'
+            })
+
+
+
+
+            timeline.push({
+                type: 'survey-text',
+                questions: [
+                    { prompt: "您的母語是", rows: 1, columns: 30 },
+                    { prompt: "您的第二語言是", rows: 1, columns: 30 },
+                    { prompt: "學習第二語言多久", rows: 1, columns: 30 }
+                ],
+                html: '<input name="language1" type="text" />'
+            })
+
+            timeline.push({
+                type: 'survey-html-form',
+                preamble: '<p>請列舉您會的其他語言以及學習時間:</b> </p>',
+                html: `
+                <input name="lang1" type="text" /> <br>
+                <input name="lang2" type="text" /> <br>
+                <input name="lang3" type="text" /> <br>
+                <input name="lang4" type="text" /> <br>
+                <input name="lang5" type="text" /> <br>
+                <input name="lang6" type="text" /> <br>`
+            })
+
+
+
+
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "您的最高學歷", name: 'Education', options: ['沒有讀完高中', '有高中文憑', '但沒有上過大學課程', '上過一些大學課程', '但沒有大學學位', ' 有大學學位並上過一些研究所課程', '有碩士以上學位。'], required: true, horizontal: true }
+                ]
+            })
+
+            timeline.push(end_block_turk_ch)
+
+            jsPsych.data.addProperties({ subject: ID });
+
+            jsPsych.init({
+                timeline: timeline,
+                // preload_video: stimuli_set,
+                show_preload_progress_bar: false,
+                on_finish: function () { saveData(ID + "_" + curr_time + "_experiment_data", jsPsych.data.get().csv()); },
+                on_trial_start: function (data) {
+                    console.log("trial started")
+                }
+            })
+        })
+
+
+</script>
+
+</html>

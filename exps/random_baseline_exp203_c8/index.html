@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HSP Verbs</title>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-text.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-instructions.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-audio-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-html-form.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+    <script src="./consent.js"></script>
+    <script src="./hsp.js"></script>
+    <script src="./audio_check.js"></script>
+
+    </link>
+</head>
+
+<body></body>
+
+<script>
+    // console.log(jsPsych.ALL_KEYS)
+    var ID;
+
+    var num_vids = 50;
+
+    // get the client IP address
+    var req = new XMLHttpRequest();
+    req.overrideMimeType("application/json");
+    req.open('GET', 'https://jsonip.com', false);
+    req.onload = function () {
+        var jsonResponse = JSON.parse(req.responseText);
+        ID = jsonResponse["ip"].replace(new RegExp(':', 'g'), "-")
+    };
+    req.send(null);
+    var curr_time = Date.now();
+    console.log("date")
+    console.log(curr_time)
+    console.log(ID)
+    fetch("data/exp203_c8_blinded.json")
+        // fetch("data/test.json")
+        .then(res => res.json())
+        .then(data => stimuli_set = data.videos)
+        // .then(() => console.log(stimuli_set))
+        .then(() => {
+
+            var training_vids = []
+            var experiment_vids = []
+
+            // separate training videos from experimental videos
+            for (var i = 0; i < stimuli_set.length; i++) {
+                if (stimuli_set[i].search("sample") != -1) {
+                    training_vids.push(stimuli_set[i])
+                } else {
+                    experiment_vids.push(stimuli_set[i])
+                }
+            }
+
+            // console.log(experiment_vids)
+            // experiment_vids.slice(0, 10).forEach(x => console.log(x))
+
+            experiment_vids = shuffle(experiment_vids)
+
+            // experiment_vids.slice(0, 10).forEach(x => console.log(x))
+            experiment_vids = experiment_vids.slice(0, num_vids)
+
+            // console.log(experiment_vids)
+
+            var timeline = []
+
+
+            //////////////////////////////////
+            /// Opening information slides //
+            ////////////////////////////////
+            timeline.push(welcome)
+            // timeline.push(consent_block)
+
+            timeline.push(consent)
+            timeline.push(instruct_block_baseline)
+
+            ////////////////////////////
+            /// Audio check section  //
+            //////////////////////////
+            timeline.push({
+                type: 'html-keyboard-response',
+                stimulus: `
+                <h1>Sound Check</h1>
+                <p>In this next section you'll hear a word.</p><p><b>Please make sure your audio is turned on so that you can hear it.</b></p><p>Select the word you heard among the available options</p><p>Press any key to proceed to sound check</p>`
+            })
+
+            var audio_check1 = {
+                type: 'audio-button-response-custom',
+                stimulus: 'data/audio_check/elephant.mp3',
+                choices: ['monkey', 'elephant', "tornado", "strawberry", "book", "car"],
+                prompt: "<p>What word did you hear?</p>"
+            };
+
+
+            timeline.push(audio_check1)
+
+
+            //////////////////////////////////////
+            /// Training video stimuli section //
+            ///////////////////////////////////
+
+            timeline.push({
+                type: 'html-keyboard-response',
+                stimulus: `
+                <h1>Examples</h1>
+                <p align="justify">Now you will see 4 example videos. Please guess what action verb you think the parent in the video is likely to be naming by entering the verb in the box below the video. You will see the correct answer afterwards.  
+</p>Again, please keep in mind:
+<br>
+<li>Verbs you are asked to guess are all <b>concrete action verbs (e.g. jump, clap)</b></li>
+<li>Enter only <b>English verbs in present tense</b></li>
+<li>For example trials, you have <b>60 seconds</b> to enter your response.</li>
+<li>Provide your best guess even if you are unsure</li>
+
+<p>Example trials will start on the next page.</p>
+
+<p>Press any key to proceed</p>`
+            })
+
+            for (var i = 0; i < training_vids.length; i++) {
+                fname = baseName(training_vids[i])
+                word = fname.split("_")[0]
+                timeline.push({
+                    type: 'hsp-free-response',
+                    trial_duration: 60000,
+                    sources: [training_vids[i]],
+                    num_responses: 1,
+                    width: 550,
+                    question: {
+                        prompt: "Most likely verb:",
+                        placeholder: ""
+                    },
+                    data: {
+                        word: word
+                    }
+                })
+
+                timeline.push({
+                    type: 'html-keyboard-response',
+                    stimulus: function () {
+                        return `
+                        <p>The correct verb for that video was: <b>${jsPsych.data.getLastTrialData().last(1).values()[0].word}</b></p> 
+                        <p>You entered: <b>${JSON.parse(jsPsych.data.getLastTrialData().select("response").values[0]).words[0]}</b></p>
+                        <p>Press any key to continue</p>`
+                    },
+                })
+            }
+            // timeline.push(end_training)
+
+
+
+            ///////////////////////////////////
+            /// Testing video stimuli section
+            ///////////////////////////////////
+            timeline.push({
+                type: 'html-keyboard-response',
+                stimulus: `
+                <h1>Start Experiment</h1>
+                <p align="justify">Now we will start the real experimental trials. Please guess what action verb you think the parent in the video is likely to be naming by entering the verb in the box below the video.  
+</p>Again, please keep in mind:
+<br>
+<li>Verbs you are asked to guess are all <b>concrete action verbs (e.g. jump, clap)</b></li>
+<li>Enter only <b>English verbs in present tense</b></li>
+<li>You have <b>20 seconds</b> to enter your response.</li>
+<li>Provide your best guess even if you are unsure</li>
+<li>You will not receive feedback on these real trials</li>
+
+<p>You will see start the real experiment on next page.</p>
+
+<p>Press any key to proceed</p>`
+            })
+            for (var i = 0; i < experiment_vids.length; i++) {
+                // console.log(stimuli_set[i])
+                // if (i % 6 === 0) {
+                //     timeline.push(start_new_block)
+                // }
+                timeline.push({
+                    type: 'hsp-free-response',
+                    sources: [experiment_vids[i]],
+                    num_responses: 1,
+                    width: 550,
+                    trial_duration: 25000,
+                    question: {
+                        prompt: "Most likely verb:",
+                        placeholder: ""
+                    },
+                    // on_finish: function () { saveData(ID + "_experiment_data", jsPsych.data.get().csv()); }
+                    on_finish: function (data) {
+                        saveData(ID + "_" + curr_time + "_experiment_data", jsPsych.data.get().csv());
+                    },
+
+
+                })
+            }
+
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "<b>Demographic Report</b><p>Please indicate your sex:", name: 'Sex', options: ['Male', 'Female', 'Other', 'I decline to respond'], required: true, horizontal: true }
+                ]
+            })
+            timeline.push({
+                type: 'survey-html-form',
+                preamble: 'Please indicate your age:',
+                html: '<input name="age" type="text" />'
+            })
+            timeline.push({
+                type: 'survey-html-form',
+                preamble: 'Are you a native English speaker? If not, please enter your native language and how long you have been learning English:',
+                html: '<input name="Language" type="text" />'
+            })
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "Please indicate your ethnicity:", name: 'Ethnicity', options: ['Hispanic or Latino', 'Not Hispanic or Latino', 'I decline to Respond'], required: true, horizontal: true },
+                    { prompt: "Please indicate your race:", name: 'Race', options: ['American Indian or Alaskan Native', 'Asian', 'Black or African American', 'Native Hawaiian or Pacific Islander', 'White', 'I decline to respond'], required: true, horizontal: true },
+                    { prompt: "What is your highest level of education?", name: 'Education', options: ['Never finished high school or GED', 'High school diploma or GED, but no college coursework', 'Some college, but have not completed a post-secondary degree', 'Associate\'s degree', 'Bachelor\'s degree', 'Bachelor\'s degree and some graduate/professional coursework', 'Completed a graduate or professional degree'], required: true, horizontal: true }
+                ]
+            })
+
+            timeline.push(end_block_turk)
+
+            jsPsych.data.addProperties({ subject: ID });
+
+            jsPsych.init({
+                timeline: timeline,
+                // preload_video: stimuli_set,
+                show_preload_progress_bar: false,
+                on_finish: function () { saveData(ID + "_" + curr_time + "_experiment_data", jsPsych.data.get().csv()); },
+                on_trial_start: function (data) {
+                    console.log("trial started")
+                }
+            })
+        })
+
+
+</script>
+
+</html>

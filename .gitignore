@@ -6,3 +6,5 @@ exps/random_baseline_1/data/blinded
 exps/hsp_synt_frames_blind1/data/global_id_ver
 exps/hsp_synt_frames_blind2/data/global_id_ver
 .idea
+scrap
+*.mp4
