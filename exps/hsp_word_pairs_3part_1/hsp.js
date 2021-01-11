@@ -4,7 +4,8 @@ var welcome = {
 };
 var welcome2 = {
     type: 'html-keyboard-response',
-    stimulus: 'Welcome to the human similarty judgement experiment for verbs. Press any key to begin.'
+    stimulus: 'Welcome to the verb similarity judgement experiment'+
+    "<p><b><i>Press any key to begin</i></b></p>"
 };
 
 var instructions = {
@@ -42,11 +43,12 @@ var instructions3 = {
     type: "html-keyboard-response",
     stimulus: `
     <h1>Instructions</h1>
-    <p align="justify">You will be asked to look over word pairs and to provide a similarity judgement. Your job is to carefully rate the similarity of the two words on a scale from 1 to 7 (1 = Not similar at all, 7 = Almost identical).</p>
+    <p align="justify">You will be shown ~165 pairs of verbs. Your job is to carefully rate the similarity of the two verbs on a scale from 1 to 7 (1 = very similar, 7 = very different).</p>
+    <p align="justify"> These are concrete action verbs parents likely say to their children in a toy-play context. If you think they can be used to describe similar actions (e.g. <b><i>turn</i></b> a Rubiks'cube and <b><i>twist</i></b> a Rubiks' cube). Then <b><i>turn</i></b> and <b><i>twist</i></b> pair should be rated as being very similar. 
+    You are allowed to go back and change your previous answers.
+    <p align="justify">The study session will last for about 20 min. Please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
 
-    <p align="justify">The study session will last 20 or so min, please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
-
-    <p><b><i>Press any key to begin.</i></b></p>`
+    <p><b><i>Press any key to begin</i></b></p>`
 };
 
 var instructions_simlex = {
@@ -111,7 +113,7 @@ var end = {
 };
 var end_words = {
     type: 'html-keyboard-response',
-    stimulus: "That's all the word pairs. Thank you for participating! You can close this this page now, data will be automatically saved"
+    stimulus: "<p>That's all the word pairs. Thank you for your participation!</p><p> To help us process your payment, please write down or remember this code: <b>IU200</b><p><b>You will need to enter this code in Amazon</b></p><p> You can close this this page now, data will be automatically saved</p>"
 };
 
 function baseName(str) {
