@@ -45,7 +45,7 @@ var instructions3 = {
     <h1>Instructions</h1>
     <p align="justify">You will be shown ~165 pairs of verbs. Your job is to carefully rate the similarity of the two verbs on a scale from 1 to 7 (1 = very similar, 7 = very different).</p>
     <p align="justify"> These are concrete action verbs parents likely say to their children in a toy-play context. If you think they can be used to describe similar actions (e.g. <b><i>turn</i></b> a Rubiks'cube and <b><i>twist</i></b> a Rubiks' cube). Then <b><i>turn</i></b> and <b><i>twist</i></b> pair should be rated as being very similar. 
-    You are allowed to go back and change your previous answers.
+    You are not allowed to go back and change your previous answers.
     <p align="justify">The study session will last for about 20 min. Please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
 
     <p><b><i>Press any key to begin</i></b></p>`
