@@ -42,11 +42,11 @@ var instructions3 = {
     type: "html-keyboard-response",
     stimulus: `
     <h1>Instructions</h1>
-    <p align="justify">You will be asked to look over word pairs and to provide a similarity judgement. Your job is to carefully rate the similarity of the two words on a scale from 1 to 7 (1 = Not similar at all, 7 = Almost identical).</p>
+    <p align="justify">You will be shown ~165 pairs of verbs. Your job is to carefully rate the similarity of the two verbs on a scale from 1 to 7 (1 = very similar, 7 = very different).</p>
+    <p align="justify"> These are concrete action verbs used in everyday conversations to describe everyday activities. For example, if you saw someone play a Rubik's cube, you may describe this action as <b>turn</b> a cube or <b>twist</b> a cube. <b>Turn</b> and <b>twist</b> are used in a similar way in this context and therefore the <b>turn</b> - <b>twist</b> pair should be viewed very similar when being used to describe concrete actions.
+    <p align="justify">The study session will last for about 20 min. Please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
 
-    <p align="justify">The study session will last 20 or so min, please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>
-
-    <p><b><i>Press any key to begin.</i></b></p>`
+    <p><b><i>Press any key to begin</i></b></p>`
 };
 
 var instructions_simlex = {
