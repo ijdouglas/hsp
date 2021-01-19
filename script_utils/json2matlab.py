@@ -3,19 +3,21 @@ import os
 import scipy.io as sio
 import numpy as np
 
+#Subject dict where the keys are "kid id" and the values are "subject id". Current version is only for experiment 15. Would need to be updated to include more experiments.
 subj_dict = {"20241":"1501","20427":"1502","20142":"1503","21933":"1504","20582":"1505","20695":"1506","21633":"1507","20473":"1508","21278":"1509","21992":"1510","20674":"1511","23512":"1512","21840":"1513","24257":"1514","21501":"1515","21960":"1516","23639":"1517","22944":"1518","21699":"1519","21769":"1520","21625":"1521","19544":"1522","19946":"1523","22049":"1524","21908":"1525","23513":"1526","21827":"1527","22666":"1528","23363":"1529","21977":"1530","23376":"1531","21131":"1532","24234":"1533","23523":"1534","23674":"1535","21381":"1536","22655":"1537","22791":"1538","23778":"1539","23846":"1540","23301":"1541","23757":"1542","24642":"1543","23775":"1544","24031":"1545","24158":"1546","24335":"1547","24270":"1548","24836":"1549","24368":"1550","24414":"1551","24237":"1552","24842":"1553","24416":"1554"}
 
-#json_filepath = "/data/aamatuni/code/postprocess_boxes/output/bbox_processed.json"
 
 child_frame_vals = {}
 parent_frame_vals = {}
 child_frame2bbox = {}
 parent_frame2bbox = {}
 
+#Directory where the frames are located
+dir = "/data/aamatuni/code/postprocess_boxes/output/"
 
-search_dir = "/data/aamatuni/code/postprocess_boxes/output/"
+#if needed, can search the directory for a .json
 '''
-for root, dirs, files in os.walk(search_dir):
+for root, dirs, files in os.walk(dir):
 	for file in files:
 		if ".json" in file:
 			filepath = os.path.join(root, file)
@@ -23,14 +25,14 @@ for root, dirs, files in os.walk(search_dir):
 			json_data = json.load(json_file)
 '''
 #dict_keys(['image_id', 'category_id', 'bbox', 'score', 'fnum', 'fname'])
-#check metadata on the ones on the server
-#recheck one of the exp 12 mat files and replicate the data structure
 
+#Loads the json file, should be changed to the path to the json file with the bounding box data.
+#json_filepath = "/data/aamatuni/code/postprocess_boxes/output/bbox_processed.json"
 json_data = json.load(open("/data/aamatuni/code/postprocess_boxes/output/exp15_remaining/bbox.json"))
 
 for row in json_data:
-	#print(search_dir, row["fname"])
-	directory = search_dir+row["fname"]
+	#print(dir, row["fname"])
+	directory = dir+row["fname"]
 	name = row["fname"]
 	name = name[name.find("_")+1:]
 	name = name[:name.find("_")]
