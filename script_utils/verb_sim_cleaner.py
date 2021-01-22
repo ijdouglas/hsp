@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import csv
 import numpy as np
+from collections import Counter
 
 def write_data(arrayed,name):
     with open(name,mode="w",encoding="utf-8",newline="") as f:
@@ -19,6 +20,8 @@ for line in dictionary_csv:
     word_dict[word] = val
 
 avg_dict = {}
+demo = {"sex":[],"age":[]}
+noreply = 0
 
 walk_location = "/mnt/c/Users/wkw/Documents/Lab/verb_similarity_data/"
 target_dir = "/mnt/c/Users/wkw/Desktop/"
@@ -53,6 +56,14 @@ for root, dirs, files in os.walk(dir):
                         if key not in avg_dict:
                             avg_dict[key] = []
                         avg_dict[key].append(similarity)
+                demostuff = temp["responses"].iloc[upperbound:].dropna()
+                if len(demostuff) > 0:
+                    sex = json.loads(demostuff.values[0])["Sex"]
+                    age = json.loads(demostuff.values[1])["Age"]
+                    demo["sex"].append(sex)
+                    demo["age"].append(int(age))
+                else:
+                    noreply +=1
                 idd +=1
 
 
@@ -63,7 +74,15 @@ for key, value in avg_dict.items():
     avg_norm.append([wordA, wordB, np.average(value)])
     avg_norm_id.append([word_dict[wordA], word_dict[wordB], np.average(value)])
 
+'''
 write_data(full_norm,target_dir+"verb_sim_basic_1-12.csv")
 write_data(full_norm_id,target_dir+"verb_sim_basic_id_1-12.csv")
 write_data(avg_norm,target_dir+"verb_sim_avg_1-12.csv")
 write_data(avg_norm_id,target_dir+"verb_sim_avg_id_1-12.csv")
+'''
+
+print("Demographic information")
+print("people",len(demo["sex"])+noreply)
+print(Counter(demo["sex"]))
+print("avg age ", np.average(demo["age"]))
+print("sd age ", np.std(demo["age"]))

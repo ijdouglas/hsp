@@ -10,14 +10,13 @@ import pandas as pd
 import scipy.io as sio
 import numpy as np
 from hanziconv import HanziConv
+from collections import Counter
 
-system = input("what system are you using? (1=windows, 2=linux) ")
-if int(system) == 1:
-    walk_location = "C:/Users/wkw/Documents/Lab/hsp_data/"
-    target_dir = "C:/Users/wkw/Desktop/"
-elif int(system) == 2:
-    walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
-    target_dir = "/mnt/c/Users/wkw/Desktop/"
+demo = {"203":{"sex":[],"age":[]},"204":{"sex":[],"age":[]}}
+no_reply1 = 0
+no_reply2 = 0
+walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
+target_dir = "/mnt/c/Users/wkw/Desktop/"
 
 wn_target_dict = {"eat":wn.synset("eat.v.01"),"stack":wn.synset("stack.v.02"),"knock":wn.synset("knock.v.01"),"shake":wn.synset("shake.v.01"),"fit":wn.synset("fit.v.02"),"drive":wn.synset("drive.v.01"),"cut":wn.synset("cut.v.01"),"put":wn.synset("put.v.01"),"turn":wn.synset("turn.v.04"),"fall":wn.synset("fall.v.01"),"hold":wn.synset("hold.v.02")}
 
@@ -70,6 +69,8 @@ exp12 = pd.read_csv("video_information_11-9.csv")
 not_in = []
 block_dictionary = {"shake":1,"hold":2,"eat":3,"fall":4,"drive":5,"turn":6,"put":7,"cut":8,"fit":9,"knock":10,"stack":11}
 dict_201 = {"hold":1,"cut":2}
+
+valid = {}
 
 def write_data(arrayed,name):
     with open(name,mode="w",encoding="utf-8",newline="") as f:
@@ -360,6 +361,7 @@ def exp200(dir,target_dir, save):
                     if len(valid) >25:
                         for row in df.values:
                             filtered_full = np.vstack((filtered_full,row))
+                    #demographic here
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
@@ -512,6 +514,7 @@ def exp201(dir,target_dir,save):
                     if len(valid) >33:
                         for row in df.values:
                             filtered_full = np.vstack((filtered_full,row))
+                        #demographic here
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
@@ -667,6 +670,7 @@ def exp202(dir,target_dir,save):
                         if len(valid) >3:
                             for row in df.loc[df["block_id"]==val].values:
                                 filtered_full = np.vstack((filtered_full,row))
+                            #demographic here
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
@@ -801,6 +805,16 @@ def exp203(dir,target_dir,save):
                     if len(valid) >25:
                         for row in df.values:
                             filtered_lean = np.vstack((filtered_lean,row))
+                        temp2 = pd.read_csv(os.path.join(root,file))
+                        responses = temp2["responses"].dropna()
+                        if len(responses) > 1:
+                            sex = json.loads(responses.values[1])["Sex"]
+                            age = json.loads(responses.values[2])["age"]
+                            demo["203"]["sex"].append(sex)
+                            demo["203"]["age"].append(int(age))
+                        else:
+                            global no_reply1
+                            no_reply1+=1
 
                 length = len(input_data[1:])
                 for row in input_data[1:]:
@@ -813,6 +827,7 @@ def exp203(dir,target_dir,save):
                     if len(valid) >25:
                         for row in df.values:
                             filtered_full = np.vstack((filtered_full,row))
+                        #demographic here
     print(filtered_full)
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
@@ -942,6 +957,16 @@ def exp204(dir,target_dir, save):
                         if len(valid) >3:
                             for row in df.loc[df["block_id"]==val].values:
                                 filtered_lean = np.vstack((filtered_lean,row))
+                    temp2 = pd.read_csv(os.path.join(root,file))
+                    responses = temp2["responses"].dropna()
+                    if len(responses) > 1:
+                        sex = json.loads(responses.values[1])["Sex"]
+                        age = json.loads(responses.values[2])["age"]
+                        demo["204"]["sex"].append(sex)
+                        demo["204"]["age"].append(int(age))
+                    else:
+                        global no_reply2
+                        no_reply2+=1        
 
                 length = len(input_data[1:])
                 for row in input_data[1:]:
@@ -955,6 +980,7 @@ def exp204(dir,target_dir, save):
                         if len(valid) >3:
                             for row in df.loc[df["block_id"]==val].values:
                                 filtered_full = np.vstack((filtered_full,row))
+                        #demographic here
 
     print(filtered_full)
     today = datetime.today()
@@ -1253,3 +1279,16 @@ if len(not_in) != 0:
     if x == "y":
         update_dict(not_in, maxx)
 
+print("exp203")
+#print(demo["203"])
+print("people",len(demo["203"]["sex"])+no_reply1)
+print(Counter(demo["203"]["sex"]))
+print("avg age ", np.average(demo["203"]["age"]))
+print("sd age ", np.std(demo["203"]["age"]))
+
+print("exp204")
+#print(demo["204"])
+print("people",len(demo["204"]["sex"])+no_reply2)
+print(Counter(demo["204"]["sex"]))
+print("avg age ", np.average(demo["204"]["age"]))
+print("sd age ", np.std(demo["204"]["age"]))
