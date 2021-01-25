@@ -12,7 +12,7 @@ import numpy as np
 from hanziconv import HanziConv
 from collections import Counter
 
-demo = {"203":{"sex":[],"age":[]},"204":{"sex":[],"age":[]}}
+demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}}}
 no_reply1 = 0
 no_reply2 = 0
 walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
@@ -84,14 +84,18 @@ def unblinder(blinded):
         return exp12.loc[(exp12["global_id_name"]==blinded)].values[0][0]
 
 def blinder(unblinded):
+    #print("blinder")
+    #print(unblinded)
     if ".mp4" not in unblinded:
         unblinded = unblinded + ".mp4"
     i1 = unblinded
     #print(i1)
+    #print(exp12.loc[(exp12["old_filename"]==unblinded)].values)
     if len(exp12.loc[(exp12["old_filename"]==unblinded)].values) ==0:
         i1 = unblinded
         for repl in ["_h","_l","_m","_s"]:
             i1 = i1.replace(repl,"")
+            #print(exp12.loc[(exp12["old_filename"]==i1)].values)
             if len(exp12.loc[(exp12["old_filename"]==i1)].values)==0:
                 #print(i1)
                 i2 = unblinded.replace("beep","voc_syntax_final")
@@ -99,7 +103,8 @@ def blinder(unblinded):
                 i2 = i1
     else:
         i2 = unblinded
-    return str(exp12.loc[(exp12["old_filename"]==i2)].values[0][10])
+    #print(exp12.loc[(exp12["old_filename"]==i2)].values)
+    return str(exp12.loc[(exp12["old_filename"]==i2)].values[0][13])
 
 def extract_turk_target_syntax(word):
     if "hammer" in word:
@@ -443,7 +448,9 @@ def exp201(dir,target_dir,save):
                         block_set = 0
                         block_type = 0
                         if not is_sample:
+                            #print(lemma)
                             global_id = blinder(trial)
+                            print(global_id)
                             cevent_guessed_word.append([onset,offset,int(lemma_id)])
                             onset +=8.0
                             offset+=8.0
@@ -609,6 +616,7 @@ def exp202(dir,target_dir,save):
                                 elif block_dictionary[target] == 3:
                                     block_type = 2
                             global_id = blinder(trial)
+                            print(global_id)
                             if int(global_id)%2 == 0:
                                 #print(trial)
                                 if [trial, global_id] not in problems:
@@ -727,6 +735,7 @@ def exp203(dir,target_dir,save):
                             #print(trial)
                             target = unblinder(trial.strip())
                         global_id = trial.replace(".mp4","")
+                        print(global_id)
                         guess = basic_corrections(filename["words"][0].strip())
                         is_sample = "_s_" in trial
                         block_num = 0
@@ -877,6 +886,7 @@ def exp204(dir,target_dir, save):
                         trial = extract_turk_video_syntax(video)
                         target = extract_turk_target_syntax(video)
                         global_id = blinder(trial)
+                        print(global_id)
                         guess = basic_corrections(filename["words"][0].strip())
                         is_sample = "_s_" in trial
                         if is_sample:
@@ -962,8 +972,8 @@ def exp204(dir,target_dir, save):
                     if len(responses) > 1:
                         sex = json.loads(responses.values[1])["Sex"]
                         age = json.loads(responses.values[2])["age"]
-                        demo["204"]["sex"].append(sex)
-                        demo["204"]["age"].append(int(age))
+                        demo["204"][block_type]["sex"].append(sex)
+                        demo["204"][block_type]["age"].append(int(age))
                     else:
                         global no_reply2
                         no_reply2+=1        
@@ -1288,7 +1298,11 @@ print("sd age ", np.std(demo["203"]["age"]))
 
 print("exp204")
 #print(demo["204"])
-print("people",len(demo["204"]["sex"])+no_reply2)
-print(Counter(demo["204"]["sex"]))
-print("avg age ", np.average(demo["204"]["age"]))
-print("sd age ", np.std(demo["204"]["age"]))
+print("people",len(demo["204"][1]["sex"])+no_reply2)
+print(Counter(demo["204"][1]["sex"]))
+print("avg age ", np.average(demo["204"][1]["age"]))
+print("sd age ", np.std(demo["204"][1]["age"]))
+print("people",len(demo["204"][2]["sex"])+no_reply2)
+print(Counter(demo["204"][2]["sex"]))
+print("avg age ", np.average(demo["204"][2]["age"]))
+print("sd age ", np.std(demo["204"][2]["age"]))
