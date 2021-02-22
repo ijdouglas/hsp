@@ -12,12 +12,24 @@ import numpy as np
 from hanziconv import HanziConv
 from collections import Counter
 
+#REQUIRES THESE TWO FILES IN THE SAME DIRECTORY
+dictionary_csv = list(csv.reader(open("hsp_voc.csv")))
+exp12 = pd.read_csv("video_information_11-9.csv")
+
+
+
 demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}}}
 no_reply1 = 0
 no_reply2 = 0
+
+#Location where the data is saved. Must be a folder that has subfolders for each experiment
+#Ex. .../hsp_data/exp200 has all of the exp200 experiment_data.csv
+#.../hsp_data/exp201 has all of 201 etc
 #walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
 #target_dir = "/mnt/c/Users/wkw/Desktop/"
 walk_location = "/home/wkw/Desktop/"
+
+#Set to where you want the files to be saved. Program will create exp_20# folders where it will save the cleaned data and split into subfolders to hold the individual data
 target_dir = "/home/wkw/Desktop/"
 
 
@@ -28,7 +40,7 @@ spell = SpellChecker()
 stemmer = SnowballStemmer("english")
 lm = WordNetLemmatizer()
 #dictionary_txt = open("voc.txt","r")
-dictionary_csv = list(csv.reader(open("hsp_voc.csv")))
+
 word_dict = {}
 minn = 100
 min_word = ""
@@ -38,6 +50,7 @@ ordering = {1:[1,2,3,4,5,6,7,8,9,10,11],2:[3,11,10,1,9,5,8,7,6,4,2]}
 
 problems = []
 
+#imports dictionary
 for line in dictionary_csv:
     #line = line.strip()
     #arr = line.split("\t")
@@ -52,6 +65,7 @@ for line in dictionary_csv:
         max_word = word
     word_dict[word] = val
 
+#short verbs with 2 or 3 char, used to filter out short entries
 short_verbs = ["be","go","do","up","ax","tip","ace","man","ice","end","air","eye","out","age","own","dog","key","cat","can","sun","ash","net","cup","ink","bed","tin","ray","see","ask","ail","sky","act","low","war","gin","bus","sin","bow","pen","boo","box","con","moo","ape","ram","pig","ham","web","let","win","tan","ban","eat","put","bar","bat","hat","cow","fly","oil","ski","cap","mar","tie","gas","rat","lie","don","nut","rap","top","pet","fox","arm","egg","fat","bay","try","toe","tar","bag","joy","par","pan","pot","toy","pat","use","set","say","log","die","pal","hop","mat","pin","dam","bet","tax","cut","row","sic","tap","cry","run","lap","bug","lay","get","vet","bin","gun","aim","cue","pay","fin","jam","gel","rip","dip","lot","axe","bob","jet","din","sue","pit","jar","rev","sip","zip","kit","lam","fan","bib","sit","aid","pod","arc","baa","mud","mix","hem","fit","coo","rob","bum","nap","pop","fix","sum","gee","cop","awe","pee","yen","kid","hoe","dot","sap","saw","dab","pad","rid","hug","job","dim","tee","sup","mop","hap","vie","lop","wax","wan","shy","bur","vex","sub","dig","ret","aby","beg","rag","buy","map","gag","hum","fee","hit","fog","wet","pup","zap","guy","bud","gum","hog","rot","cox","rue","jab","tat","peg","hue","mug","rig","rim","jaw","wag","wow","pun","hex","woo","nab","lag","wed","haw","rub","wad","sag","cod","add","cub","nag","eff","wee","fax","cog","owe","rut","dry","nod","pip","paw","sod","jag","opt","rib","nip","mow","tag","vow","sop","fib","gap","tow","dub","caw","tog","jig","hie","bid","lob","jog"]
 filters = ["don't k ow","idk","im not sure"," ","i really dont know",'no idea',"i have no clue","not sure again","no clue","asdasd","winne","sup","verb","njnn","bute"]
 
@@ -67,8 +81,6 @@ words_incorrect = {}
 total_count = 0
 spaces = []
 spaces_other = []
-#exp12 = pd.read_csv("exp12_voc_looxcie-full_11-8.csv")
-exp12 = pd.read_csv("video_information_11-9.csv")
 not_in = []
 block_dictionary = {"shake":1,"hold":2,"eat":3,"fall":4,"drive":5,"turn":6,"put":7,"cut":8,"fit":9,"knock":10,"stack":11}
 dict_201 = {"hold":1,"cut":2}
@@ -80,6 +92,7 @@ def write_data(arrayed,name):
         writer = csv.writer(f)
         writer.writerows(arrayed)
 
+#Blinder and unblinder function to change between global id and normal, uses the exp12 imported csv
 def unblinder(blinded):
     if "_" in blinded:
         return blinded[:blinded.find("_")]
@@ -109,6 +122,7 @@ def blinder(unblinded):
     #print(exp12.loc[(exp12["old_filename"]==i2)].values)
     return str(exp12.loc[(exp12["old_filename"]==i2)].values[0][13])
 
+#Since the naming schemes changed between the different conditions, different methods are needed to extract the video file or verb from a given csv file
 def extract_turk_target_syntax(word):
     if "hammer" in word:
         return "hammer"
@@ -150,6 +164,7 @@ def extract_rand_baseline_video(word):
     word = word[word.find("/")+1:]
     return word
 
+#Basic corrections that get ignored or messed up by the spell checker
 def basic_corrections(guess):
     orig = guess
     guess = guess.lower()
@@ -211,67 +226,45 @@ def basic_corrections(guess):
     for rep in replacements:
         guess = guess.replace(rep,"")
     guess = guess.strip()
-    if guess == "brush hair":
-        print(orig)
-        print(guess)
-    if guess == "cut/press":
-        print(orig)
-        print(guess)
-    if guess == "hang-up":
-        print(orig)
-        print(guess)
-    if guess == "sup":
-        print(orig)
-        print(guess)
-    if guess == "bute":
-        print(orig)
-        print(guess)
-    if guess == "carre":
-        print(orig)
-        print(guess)
-    if guess == "nunn":
-        print(orig)
-        print(guess)
-    if guess == "asda":
-        print(orig)
-        print(guess)
     return guess
 
+#Used to initialize the different csv
 def header():
     return [["subj","ip","condition","trial","global_id","instance_id","trial_id","block_set","block_id","trial_in_block","target","target ID","original_guess","corrected_guess","spell-check","candidates","wordprob","guess","guess_id","target_guess_match","verb_synset","wn_wup"]]
 
 def slim_header():
     return [["subj","trial","global_id","instance_id","trial_id","block_set","block_id","trial_in_block","target","target_id","guess","guess_id","match"]]
 
-
+#Goes through exp200 folder
 def exp200(dir,target_dir, save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
-    folder_holder = "experiment_200/"
-    filtered_lean = slim_header()
+    folder_holder = "experiment_200/" 
+    filtered_lean = slim_header() #initialize the arrays
     filtered_full = header()
     unfiltered_lean = slim_header()
     unfiltered_full = header()
-    if not os.path.isdir(target_dir+folder_holder):
+    if not os.path.isdir(target_dir+folder_holder): #Checks if the target folder exists, creates one otherwise
         os.mkdir(target_dir+folder_holder)
     target_dir = target_dir + folder_holder
     global walk_location
-    condition = dir.replace(walk_location,"")
+    condition = dir.replace(walk_location,"") #gets condition
     condition = condition.replace("/","")
     subject = 200001
     for root, dirs, files in os.walk(dir):
         for file in files:
             if "exp200" in root and "ignore" not in file and "experiment" in file:
-                temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8")))
+                temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8"))) #loads csv
                 source_file = os.path.join(root, file)
                 trial_id = 1
-                input_data = header()
+                input_data = header() #per subject arrays
                 slim_data = slim_header()
                 cevent_guessed_word = []
-                onset = 30
+                onset = 30 #onset info for matlab
                 offset = float(36.9800)
                 for row in temp:
-                    if row[0] != "rt" and len(row[11])!= 0:
-                        ip = file[:file.find("_")]
+                    if row[0] != "rt" and len(row[11])!= 0: #used to ignore the first row
+                        #below grabs the different information from the file
+                        ip = file[:file.find("_")] 
                         filename = json.loads(row[11])
                         video = filename["video"]
                         trial = extract_rand_baseline_video(video)
@@ -298,9 +291,9 @@ def exp200(dir,target_dir, save):
                             words[lemma] = 1
                         elif lemma in words and verbs>0:
                             words[lemma] = words[lemma] +1
-                        global total_count
+                        global total_count 
                         total_count = total_count + 1
-                        if target not in word_dict.keys():
+                        if target not in word_dict.keys(): #dictionary part, sees if the file is in the hsp_dict file
                             target_id = "999999"
                             if target not in not_in:
                                 not_in.append(target)
@@ -328,6 +321,7 @@ def exp200(dir,target_dir, save):
                             input_data.append(full_row)
                             slim_data.append(slim_row)
                             trial_id+=1
+                #Matlab part
                 info = {"timestamp":datetime.today().strftime("%d-%m-%Y %H:%M:%S"), "subject":subject,"path":source_file,"hostname":"laptop","user":"user"}
                 inner_structure = {"variable":"cevent_guessed-word","data":cevent_guessed_word,"info":info}
                 final_structure = {"sdata":inner_structure}
@@ -347,6 +341,7 @@ def exp200(dir,target_dir, save):
                     os.system("cp "+source_file+" "+given+"/raw_data.csv")
                 subject+=1
 
+                #Filtering part, checks if it fulfills a given length
                 length = len(slim_data[1:])
                 for row in slim_data[1:]:
                     unfiltered_lean.append(row)
@@ -369,8 +364,7 @@ def exp200(dir,target_dir, save):
                     if len(valid) >25:
                         for row in df.values:
                             filtered_full = np.vstack((filtered_full,row))
-                    #demographic here
-    print(filtered_full)
+    print(filtered_full) #saves the data
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
 
@@ -386,6 +380,7 @@ def exp200(dir,target_dir, save):
     unfilt_lean =target_dir+"exp200_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
 
+#General format the same as exp200, see notes from that
 def exp201(dir,target_dir,save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
     folder_holder = "experiment_201/"
@@ -543,6 +538,7 @@ def exp201(dir,target_dir,save):
     unfilt_lean =target_dir+"exp201_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
 
+#General format the same as exp200, see notes from that
 def exp202(dir,target_dir,save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
     folder_holder = "experiment_202/"
@@ -700,6 +696,7 @@ def exp202(dir,target_dir,save):
     unfilt_lean =target_dir+"exp202_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
 
+#General format the same as exp200, see notes from that
 def exp203(dir,target_dir,save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
     folder_holder = "experiment_203/"
@@ -821,7 +818,7 @@ def exp203(dir,target_dir,save):
                             filtered_lean = np.vstack((filtered_lean,row))
                         temp2 = pd.read_csv(os.path.join(root,file))
                         responses = temp2["responses"].dropna()
-                        if len(responses) > 1:
+                        if len(responses) > 1: #Demographic part
                             sex = json.loads(responses.values[1])["Sex"]
                             age = json.loads(responses.values[2])["age"]
                             demo["203"]["sex"].append(sex)
@@ -857,6 +854,8 @@ def exp203(dir,target_dir,save):
 
     unfilt_lean =target_dir+"exp203_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
+
+#General format the same as exp200, see notes from that
 
 def exp204(dir,target_dir, save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
@@ -975,7 +974,7 @@ def exp204(dir,target_dir, save):
                     temp2 = pd.read_csv(os.path.join(root,file))
                     responses = temp2["responses"].dropna()
                     if len(responses) > 1:
-                        sex = json.loads(responses.values[1])["Sex"]
+                        sex = json.loads(responses.values[1])["Sex"] #demographic part
                         age = json.loads(responses.values[2])["age"]
                         demo["204"][block_type]["sex"].append(sex)
                         demo["204"][block_type]["age"].append(int(age))
@@ -995,7 +994,6 @@ def exp204(dir,target_dir, save):
                         if len(valid) >3:
                             for row in df.loc[df["block_id"]==val].values:
                                 filtered_full = np.vstack((filtered_full,row))
-                        #demographic here
 
     print(filtered_full)
     today = datetime.today()
@@ -1013,6 +1011,8 @@ def exp204(dir,target_dir, save):
     unfilt_lean =target_dir+"exp204_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
 
+#General format the same as exp200, see notes from that
+#Chinese hsp version
 def exp205(dir,target_dir,save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
     print("does not work with gitbash cli")
@@ -1186,7 +1186,7 @@ def exp205(dir,target_dir,save):
     write_data(unfiltered_lean,unfilt_lean)
 
 
-
+#Walks through a given dir and checks the subfolders
 def general_walk(root_dir):
     dir = root_dir
     for root, dirs, files in os.walk(dir):
@@ -1281,12 +1281,12 @@ def update_dict(not_in, maxx):
         new_dict.append([key,word_dict[key]])
     write_data(new_dict,"hsp_voc.csv")
 
-
+#walk call
 general_walk(walk_location)
 for row in problems:
     print(row)
 
-
+#Checks if the dict needs updating
 print()
 if len(not_in) != 0:
     print(not_in)
