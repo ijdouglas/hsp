@@ -15,8 +15,11 @@ from collections import Counter
 demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}}}
 no_reply1 = 0
 no_reply2 = 0
-walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
-target_dir = "/mnt/c/Users/wkw/Desktop/"
+#walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
+#target_dir = "/mnt/c/Users/wkw/Desktop/"
+walk_location = "/home/wkw/Desktop/"
+target_dir = "/home/wkw/Desktop/"
+
 
 wn_target_dict = {"eat":wn.synset("eat.v.01"),"stack":wn.synset("stack.v.02"),"knock":wn.synset("knock.v.01"),"shake":wn.synset("shake.v.01"),"fit":wn.synset("fit.v.02"),"drive":wn.synset("drive.v.01"),"cut":wn.synset("cut.v.01"),"put":wn.synset("put.v.01"),"turn":wn.synset("turn.v.04"),"fall":wn.synset("fall.v.01"),"hold":wn.synset("hold.v.02")}
 
@@ -450,13 +453,14 @@ def exp201(dir,target_dir,save):
                         if not is_sample:
                             #print(lemma)
                             global_id = blinder(trial)
-                            print(global_id)
+                            #print(global_id)
                             cevent_guessed_word.append([onset,offset,int(lemma_id)])
                             onset +=8.0
                             offset+=8.0
                             #if trial_id == 1:
                             #    block_type = dict_201[target]
                             instance_id = global_id[0:2]+global_id[4:-2]
+                            '''
                             targ_synset = wn_target_dict[target]
                             if lemma == "N/A":
                                 wn_wup = 999
@@ -472,7 +476,8 @@ def exp201(dir,target_dir,save):
                                     print(wn.synsets(lemma))
                                     guess_synset = wn.synsets(lemma)[0]
                                     wn_wup = targ_synset.wup_similarity(guess_synset)
-                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),wn_wup]
+                            '''
+                            full_row = [subject,ip,condition,trial,global_id,instance_id,trial_id,block_type,block_set,block_num,target,target_id,filename["words"][0],guess,corrected,candidates,spell.word_probability(corrected),lemma,lemma_id,int(target==lemma),int(verbs>0),""]
 
                             slim_row = [subject,trial, global_id, instance_id,trial_id,block_type,block_set,block_num, target,target_id,lemma,lemma_id,int(target==lemma)]
 
