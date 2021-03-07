@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HSP Verbs</title>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-text.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-likert.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-instructions.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-audio-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-image-slider-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-html-form.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+    <script src="./hsp.js"></script>
+    <script src="./audio_check.js"></script>
+    <script src="./consent_wp.js"></script>
+    <script src="./probe_trial.js"></script>
+
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    </link>
+</head>
+
+<body></body>
+
+<script>
+
+    var ID;
+    //var num_pairs = 150;
+    // get the client IP address
+    var req = new XMLHttpRequest();
+    req.overrideMimeType("application/json");
+    req.open('GET', 'https://jsonip.com', false);
+    req.onload = function () {
+        var jsonResponse = JSON.parse(req.responseText);
+        ID = jsonResponse["ip"].replace(new RegExp(':', 'g'), "-")
+    };
+    req.send(null);
+    var curr_time = Date.now();
+    console.log("date")
+    console.log(curr_time)
+    console.log(ID)
+    fetch("data/example_json.json")
+        .then(res => res.json())
+        .then(data => {
+            var test_photo_pairs = data["photo_pair"]
+
+            var timeline = []
+            //////////////////////////////////
+            /// Opening information slides //
+            ////////////////////////////////
+            //timeline.push(welcome)
+            
+            //////CONSENT FORM, FROM CONSENT_WP.JS
+            //timeline.push(consent)
+
+
+            ////BASIC INFO / DEMOGRAPHIC SECTION
+            
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "<b>Demographic Report</b><p>Please indicate your sex:", name: 'Sex', options: ['Male', 'Female', 'Other', 'I decline to respond'], required: true, horizontal: true }
+                ]
+            })
+            timeline.push({
+                type: 'survey-text',
+                questions: [
+                    {
+                        prompt: 'Please indicate your age:', name: "Age", required: true
+                    }
+                ]
+            })
+            timeline.push({
+                type: 'survey-text',
+                questions: [
+                    {
+                        prompt: 'Are you a native English speaker? If not, please enter your native language and how long you have been learning English:', name: "Language", required: true
+                    }
+                ]
+            })
+            timeline.push({
+                type: 'survey-multi-choice',
+                questions: [
+                    { prompt: "Please indicate your ethnicity:", name: 'Ethnicity', options: ['Hispanic or Latino', 'Not Hispanic or Latino', 'I decline to Respond'], required: true, horizontal: true },
+                    { prompt: "Please indicate your race:", name: 'Race', options: ['American Indian or Alaskan Native', 'Asian', 'Black or African American', 'Native Hawaiian or Pacific Islander', 'White', 'I decline to respond'], required: true, horizontal: true },
+                    { prompt: "What is your highest level of education?", name: 'Education', options: ['Never finished high school or GED', 'High school diploma or GED, but no college coursework', 'Some college, but have not completed a post-secondary degree', 'Associate\'s degree', 'Bachelor\'s degree', 'Bachelor\'s degree and some graduate/professional coursework', 'Completed a graduate or professional degree'], required: true, horizontal: true }
+                ],
+                on_finish: function (data) {
+                    saveData(ID +"_"+curr_time+ "_experiment_data", jsPsych.data.get().csv());
+                }
+            })
+
+            ///////////////////////////////////
+            /// Testing photo_pair stimuli section
+            ///////////////////////////////////
+            var scale_1 = [
+                "1", "2", "3", "4", "5", "6", "7"
+            ]
+            for (var i = 0; i < test_photo_pairs.length; i++) {
+                var photo1 = test_photo_pairs[i][0]
+                var photo2 = test_photo_pairs[i][1]
+                var pair = [photo1, photo2]
+                timeline.push({
+                        type: 'probe-trial',
+                        stimulus: [],
+                        imgs: [photo1, photo2],
+                        choices: scale_1,
+                        prompt: "<p>Rate (1= very different, 7 = very similar) the similarity between these two photos.</p>",
+                        on_finish: function (data) {
+                            saveData(ID + "_" + curr_time + "_experiment_data", jsPsych.data.get().csv());
+                        },
+                })
+            }
+            
+
+            //timeline.push(end_words)
+
+            jsPsych.data.addProperties({ subject: ID });
+
+            jsPsych.init({
+                timeline: timeline,
+                // preload_video: stimuli_set,
+                show_preload_progress_bar: true,
+                on_finish: function () { saveData(ID +"_"+curr_time+ "_experiment_data", jsPsych.data.get().csv()); },
+            })
+        })
+
+
+</script>
+
+</html>
