@@ -18,19 +18,19 @@ exp12 = pd.read_csv("video_information_11-9.csv")
 
 
 
-demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}}}
+demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}},"205":{"sex":[],"age":[]}}
 no_reply1 = 0
 no_reply2 = 0
 
 #Location where the data is saved. Must be a folder that has subfolders for each experiment
 #Ex. .../hsp_data/exp200 has all of the exp200 experiment_data.csv
 #.../hsp_data/exp201 has all of 201 etc
-walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
-#walk_location = "/home/wkw/Desktop/"
+#walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
+walk_location = "/home/wkw/Desktop/"
 
 #Set to where you want the files to be saved. Program will create exp_20# folders where it will save the cleaned data and split into subfolders to hold the individual data
-target_dir = "/mnt/c/Users/wkw/Desktop/"
-#target_dir = "/home/wkw/Desktop/"
+#target_dir = "/mnt/c/Users/wkw/Desktop/"
+target_dir = "/home/wkw/Desktop/"
 
 
 wn_target_dict = {"eat":wn.synset("eat.v.01"),"stack":wn.synset("stack.v.02"),"knock":wn.synset("knock.v.01"),"shake":wn.synset("shake.v.01"),"fit":wn.synset("fit.v.02"),"drive":wn.synset("drive.v.01"),"cut":wn.synset("cut.v.01"),"put":wn.synset("put.v.01"),"turn":wn.synset("turn.v.04"),"fall":wn.synset("fall.v.01"),"hold":wn.synset("hold.v.02")}
@@ -99,9 +99,7 @@ def unblinder(blinded):
     else:
         return exp12.loc[(exp12["global_id_name"]==blinded)].values[0][0]
 
-def unblinder_205(blinded):
-    blinded = blinded.replace("03.mp4","01.mp4")
-    return exp12.loc[(exp12["global_id_name"]==blinded)].values[0][0]
+unblinder_205 = json.load(open('./exp205_gIDs.json'))
 
 def blinder(unblinded):
     #print("blinder")
@@ -172,11 +170,12 @@ def extract_rand_baseline_video(word):
 def basic_corrections(guess):
     orig = guess
     guess = guess.lower()
+    guess = guess.strip()
     if guess == "fell" or guess == "gell":
         guess = "fall"
     elif guess == "movre":
         guess = "move"
-    elif guess == "holf" or guess == "hild" or guess == "wold":
+    elif guess == "holf" or guess == "hild" or guess == "wold" or guess == "h old":
         guess = "hold"
     elif guess == "trun":
         guess = "turn"
@@ -192,8 +191,6 @@ def basic_corrections(guess):
         guess = "is"
     elif guess == "ea t":
         guess = "eat"
-    elif guess == "h old":
-        guess = "hold"
     elif guess == "scatch":
         guess = "scratch"
     elif guess == "squeez":
@@ -220,13 +217,19 @@ def basic_corrections(guess):
         guess = "hang"
     elif guess == "pickup":
         guess = "pick"
+    elif guess == "laydown" or guess == "putdown":
+        guess = guess[:guess.find("down")]
+    elif " square" in guess or " together" in guess:
+        guess = guess[:guess.find(" ")]
+    elif "-down" in guess:
+        guess = guess[:guess.find("-")]
     elif len(guess) <= 1 or guess in filters or "fuck" in guess or "bitch" in guess or "ass" == guess or "cunt" in guess or "shit" in guess:
         guess = "N/A"
     elif (len(guess) == 2 or len(guess) == 3) and guess not in short_verbs:
         guess = "N/A"
     elif len(guess) > 15:
         guess = "N/A"
-    replacements = ["?"," to bed"," back"," hair"," up"," with","-up"," on"," top"," over"," around","to "," go"," is","it ","go ",","," into","inside"," in"," them"," knock"," stack"," blocks"," the ball"," there"," the"," it"," noise"," down for"," down"," things","\\"," off"," out","-you"] #put inside -> putside
+    replacements = ["","don't","?"," to bed"," back"," hair"," up"," with","-up"," on"," top"," over"," around","to "," go"," is","it ","go ",","," into","inside"," in"," them"," knock"," stack"," blocks"," the ball"," there"," the"," it"," noise"," down for"," down"," things","\\"," off"," out","-you"] #put inside -> putside
     for rep in replacements:
         guess = guess.replace(rep,"")
     guess = guess.strip()
@@ -1021,17 +1024,21 @@ def exp204(dir,target_dir, save):
 def exp205(dir,target_dir,save):
     #print(datetime.today().strftime("%d-%m-%Y %H:%M:%S"))
     folder_holder = "experiment_205/"
-    filtered_lean = exp_205_header()
-    unfiltered_lean = exp_205_header()
+    filtered = exp_205_header()
+    unfiltered = exp_205_header()
     if not os.path.isdir(target_dir+folder_holder):
         os.mkdir(target_dir+folder_holder)
     target_dir = target_dir + folder_holder
     global walk_location
     subject = 205001
     for root, dirs, files in os.walk(dir):
-        condition = root[root.find("cond")+4]
+        dirs.sort()
         for file in files:
             if "exp205" in root and "ignore" not in file and "experiment" in file:
+                ip = file[:file.find("_")]
+                condition = int(root[root.find("cond")+4])
+                first_words = ["stack","hold","stack","hold"]
+                last_target = first_words[condition-1]
                 temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8")))
                 source_file = os.path.join(root, file)
                 trial_id = 1
@@ -1044,7 +1051,7 @@ def exp205(dir,target_dir,save):
                 trial_in_block = 1
                 for row in temp:
                     if row[0] != "rt" and len(row[11])!= 0:
-                        ip = file[:file.find("_")]
+                        
                         filename = json.loads(row[11])
                         trial = filename["video"].replace("data/vid_files/","")
                         if "sample" not in trial:
@@ -1052,15 +1059,21 @@ def exp205(dir,target_dir,save):
                             #trial = video.replace("./data/global_id_ver/","")
                             #trial = trial.replace("sample/","")
                             #print("trial", trial)
-                            target = unblinder_205(trial.strip())
                             #print("target", target)
-                            target_id = word_dict[target]
                             global_id = trial.replace(".mp4","")
+                            #print(row)
+                            target = unblinder_205[global_id]
+                            #print(target)
+                            target_id = word_dict[target]
                             #print("global_id", global_id)
                             guesses = filename["words"]
                             top_choice = 1
                             #print("guesses", guesses)
+                            if target != last_target:
+                                block_id +=1
+                                trial_in_block = 1
                             for guess in guesses:
+                                orig = guess
                                 guess = basic_corrections(guess)
                                 corrected = spell.correction(guess)
                                 lemma = lm.lemmatize(corrected, wn.VERB)
@@ -1069,8 +1082,8 @@ def exp205(dir,target_dir,save):
                                 if lemma not in word_dict.keys():
                                     lemma_id = "999999"
                                     if lemma not in not_in:
-                                        print(guess.strip())
-                                        print(lemma)
+                                        print("Guess: ", orig)
+                                        print("Corrected:", lemma)
                                         not_in.append(lemma)
                                 else:
                                     lemma_id = word_dict[lemma]
@@ -1078,19 +1091,22 @@ def exp205(dir,target_dir,save):
                                 onset +=8.0
                                 offset+=8.0
                                 instance_id = global_id[0:2]+global_id[4:-2]
+                                #instance_id = int(global_id[4:-2])
                                 full_row = [subject, global_id, instance_id, condition, trial_id, block_id, trial_in_block,top_choice, target, target_id, lemma, lemma_id, int(lemma_id == target_id)]
                                 input_data.append(full_row)
                                 top_choice += 1
-                            if trial_id != 1:
-                                if target != last_target:
-                                    block_id +=1
-                                    trial_in_block == 1
-                            last_target = target
+                            trial_in_block +=1
+                            
                             trial_id+=1
-                for row in input_data:
-                    print(row)
-                print("\n\n\n")
-"""                 info = {"timestamp":datetime.today().strftime("%d-%m-%Y %H:%M:%S"), "subject":subject,"path":source_file,"hostname":"laptop","user":"user"}
+                            #print("target",target, 'last_target',last_target)
+                            #print(target == last_target)
+                            last_target = target
+                            
+                            
+                #for row in input_data:
+                #    print(row)
+                #print("\n\n\n")
+                info = {"timestamp":datetime.today().strftime("%d-%m-%Y %H:%M:%S"), "subject":subject,"path":source_file,"hostname":"laptop","user":"user"}
                 inner_structure = {"variable":"cevent_guessed-word","data":cevent_guessed_word,"info":info}
                 final_structure = {"sdata":inner_structure}
                 #print(subject)
@@ -1105,20 +1121,19 @@ def exp205(dir,target_dir,save):
                 if save == 1:
                     sio.savemat(savestring, final_structure)
                     write_data(input_data,given+"/cleaned_data.csv")
-                    write_data(slim_data,given+"/cleaned_slim_data.csv")
                     os.system("cp "+source_file+" "+given+"/raw_data.csv")
-                subject+=1 """
-
-"""                 length = len(slim_data[1:])
-                for row in slim_data[1:]:
-                    unfiltered_lean.append(row)
+                subject+=1
+                length = len(input_data[1:])
+                for row in input_data[1:]:
+                    unfiltered.append(row)
                 if length >33:
-                    df = pd.DataFrame(data =slim_data[1:], columns = slim_data[0])
-                    entries = df.values
+                    df = pd.DataFrame(data =input_data[1:], columns = input_data[0])
+                    entries = df["guess"].values
                     valid = entries[entries != "N/A"]
+                    #print(len(valid))
                     if len(valid) >25:
                         for row in df.values:
-                            filtered_lean = np.vstack((filtered_lean,row))
+                            filtered = np.vstack((filtered,row))
                         temp2 = pd.read_csv(os.path.join(root,file))
                         responses = temp2["responses"].dropna()
                         if len(responses) > 1: #Demographic part
@@ -1128,26 +1143,14 @@ def exp205(dir,target_dir,save):
                             demo["205"]["age"].append(int(age))
                         else:
                             global no_reply1
-                            no_reply1+=1 """
-
-"""                 length = len(input_data[1:])
-                if length >33:
-                    df = pd.DataFrame(data =input_data[1:], columns = input_data[0])
-                    entries = df["guess"].values
-                    valid = entries[entries != "N/A"]
-                    #print(len(valid))
-                    if len(valid) >25:
-                        for row in df.values:
-                            filtered_full = np.vstack((filtered_full,row))
-                        #demographic here """
-"""     today = datetime.today()
+                            no_reply1+=1 
+    #print(filtered)
+    today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-
-    filt_lean = target_dir+"exp205_lean_filt_"+Date+".csv"
-    write_data(filtered_lean, filt_lean)
-
-    unfilt_lean =target_dir+"exp205_lean_unfilt_"+Date+".csv"
-    write_data(unfiltered_lean,unfilt_lean) """
+    filt = target_dir+"exp205_lean_filt_"+Date+".csv"
+    write_data(filtered, filt)
+    unfilt =target_dir+"exp205_lean_unfilt_"+Date+".csv"
+    write_data(unfiltered,unfilt)
 
 #General format the same as exp200, see notes from that
 #Chinese hsp version
@@ -1328,9 +1331,9 @@ def exp205_Chinese(dir,target_dir,save):
 def general_walk(root_dir):
     dir = root_dir
     for root, dirs, files in os.walk(dir):
-        if "exp205" in root:
+        if "exp205" in root and "cond" not in root:
             print()
-            print("exp205")
+            print("exp205 ", root)
             x = input("run? (y/yes/1 for yes) ")
             #x = "y"
             if x == "y" or x == "yes" or x == "1":
@@ -1432,7 +1435,7 @@ if len(not_in) != 0:
     if x == "y":
         update_dict(not_in, maxx)
 
-print("exp203")
+""" print("exp203")
 #print(demo["203"])
 print("people",len(demo["203"]["sex"])+no_reply1)
 print(Counter(demo["203"]["sex"]))
@@ -1448,4 +1451,4 @@ print("sd age ", np.std(demo["204"][1]["age"]))
 print("people",len(demo["204"][2]["sex"])+no_reply2)
 print(Counter(demo["204"][2]["sex"]))
 print("avg age ", np.average(demo["204"][2]["age"]))
-print("sd age ", np.std(demo["204"][2]["age"]))
+print("sd age ", np.std(demo["204"][2]["age"])) """
