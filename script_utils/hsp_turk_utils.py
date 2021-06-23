@@ -8,12 +8,6 @@ unblinder_205 = json.load(open('./exp205_gIDs.json'))
 short_verbs = ["be","go","do","up","ax","tip","ace","man","ice","end","air","eye","out","age","own","dog","key","cat","can","sun","ash","net","cup","ink","bed","tin","ray","see","ask","ail","sky","act","low","war","gin","bus","sin","bow","pen","boo","box","con","moo","ape","ram","pig","ham","web","let","win","tan","ban","eat","put","bar","bat","hat","cow","fly","oil","ski","cap","mar","tie","gas","rat","lie","don","nut","rap","top","pet","fox","arm","egg","fat","bay","try","toe","tar","bag","joy","par","pan","pot","toy","pat","use","set","say","log","die","pal","hop","mat","pin","dam","bet","tax","cut","row","sic","tap","cry","run","lap","bug","lay","get","vet","bin","gun","aim","cue","pay","fin","jam","gel","rip","dip","lot","axe","bob","jet","din","sue","pit","jar","rev","sip","zip","kit","lam","fan","bib","sit","aid","pod","arc","baa","mud","mix","hem","fit","coo","rob","bum","nap","pop","fix","sum","gee","cop","awe","pee","yen","kid","hoe","dot","sap","saw","dab","pad","rid","hug","job","dim","tee","sup","mop","hap","vie","lop","wax","wan","shy","bur","vex","sub","dig","ret","aby","beg","rag","buy","map","gag","hum","fee","hit","fog","wet","pup","zap","guy","bud","gum","hog","rot","cox","rue","jab","tat","peg","hue","mug","rig","rim","jaw","wag","wow","pun","hex","woo","nab","lag","wed","haw","rub","wad","sag","cod","add","cub","nag","eff","wee","fax","cog","owe","rut","dry","nod","pip","paw","sod","jag","opt","rib","nip","mow","tag","vow","sop","fib","gap","tow","dub","caw","tog","jig","hie","bid","lob","jog"]
 filters = ["don't k ow","idk","im not sure"," ","i really dont know",'no idea',"i have no clue","not sure again","no clue","asdasd","winne","sup","verb","njnn","bute","dunno"]
 
-def slim_header():
-    return [["subj","trial","global_id","instance_id","trial_id","block_set","block_id","trial_in_block","target","target_id","guess","guess_id","match"]]
-
-def exp_205_header():
-    return [["subj","global_id","instance_id","condition","trial_id","block_id","trial_in_block","top_choice","target","target_id","guess","guess_id","match"]]
-
 
 def basic_corrections(guess):
     orig = guess

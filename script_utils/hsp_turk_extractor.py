@@ -8,7 +8,6 @@ from datetime import datetime
 import pandas as pd
 import scipy.io as sio
 import numpy as np
-from collections import Counter
 from hsp_turk_utils import basic_corrections, write_data, blinder, unblinder, extract_video, update_dict
 
 #REQUIRES THESE TWO FILES IN THE SAME DIRECTORY
@@ -127,7 +126,7 @@ def extract_data(dir,target_dir,experiment, save):
                             if experiment == "200" or experiment == "201" or experiment == "203":
                                 trial_in_block = 0
                                 block_id = 0
-                                condition = 0
+                                condition = 1
 
                             elif experiment == "202" or experiment == "204":
                                 trial_in_block = 0
