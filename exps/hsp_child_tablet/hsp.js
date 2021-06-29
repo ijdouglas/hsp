@@ -335,7 +335,12 @@ var end_slide = {
 
 // shuffle an array's elements
 function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
+    return shuffle(array, 0, array.length - 1);
+}
+
+// shuffle an array's elements within specified range (inclusive)
+function shuffle(array, startIndex, endIndex) {
+    for (let i = endIndex; i > startIndex; i--) {
         const j = Math.floor(Math.random() * i)
         const temp = array[i]
         array[i] = array[j]
@@ -343,7 +348,6 @@ function shuffle(array) {
     }
     return array;
 }
-
 // get file name from file path
 function baseName(str) {
     var base = new String(str).substring(str.lastIndexOf('/') + 1);

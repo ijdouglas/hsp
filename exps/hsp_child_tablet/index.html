@@ -23,7 +23,8 @@
     </link>
 </head>
 
-<body></body>
+<body>
+</body>
 
 <script>
     var ID;
@@ -60,8 +61,7 @@
 
             var vid_count = {
                 type: 'html-button-response',
-                //stimulus: 'Experiment videos: ' + experiment_vids.length + ', training videos: ' + training_vids.length,
-                stimulus: 'Experiment videos: ' + experiment_vids,
+                stimulus: 'Experiment videos: ' + experiment_vids.length + ', training videos: ' + training_vids.length,
                 choices: ['ok']
             }
             //timeline.push(vid_count)
@@ -118,10 +118,10 @@
                 stimulus: 'Choose the one that is different',
                 choices: ['-', '-', 'x', '-'],
                 button_html: [
-                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
-                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
-                        '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">',
-                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                    '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                    '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                    '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">',
+                    '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">'],
                 //trial_duration: 60000,    // default: null, set number to specify time limit
                 on_finish: function (data) {
                     if (data.response == 2)
@@ -135,9 +135,9 @@
             timeline.push(touch_screen_game)
 
 
-            ////////////////////////////////////
-            // Video slide w/ image response //
-            //////////////////////////////////
+            ///////////////////////////////////////////
+            // Sample video slide w/ emoji response //
+            /////////////////////////////////////////
 
             var button_response = {
                 type: 'video-button-response',
@@ -162,24 +162,25 @@
             //timeline.push(button_response)
 
             ///////////////////////////////
-            // Randomnized order trials //
+            // Randomized order trials //
             /////////////////////////////
-            var randomized_videos = experiment_vids
+            var randomized_videos = []
 
-            // completely randomized (all experiment videos)
+            // METHOD 1: completely randomized ---------------//
+
+            randomized_videos = shuffle(experiment_vids)
             for (var i = 0; i < randomized_videos.length; i++) {
-                randomnized_videos = shuffle(experiment_vids)
                 var random_trial = {
                     type: 'video-button-response',
-                    stimulus: [randomnized_videos[i]],      // array of file path(s) to the video
+                    stimulus: [randomized_videos[i]],
                     choices: ['smile', 'frown'],
                     button_html: [
                         '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
                         '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
                     width: 550,
-                    controls: true,                             // viewer have video controls (pausing/playback)
-                    trial_duration: 60000,                      // default: null, set number to specify time limit
-                    //response_allowed_while_playing: false,    // response is enabled/disabled until video finishes
+                    controls: true,
+                    trial_duration: 60000,
+                    //response_allowed_while_playing: false,
                     on_finish: function (data) {
                         if (data.response == 0)
                             data.answer = 'smile'
@@ -189,12 +190,104 @@
                             data.answer = 'no answer'
                     }
                 }
-                timeline.push(random_trial)
+                //timeline.push(random_trial)
             }
 
-            // randomized in 2 blocks
-            
-            // randomized blocks of 5 + fixed attention-getting trials
+
+            // METHOD 2: randomized in 2 blocks ---------------//
+
+            var block_size = 20
+
+            // randomize videos in blocks
+            randomized_videos = []
+            for (var i = 0; i < block_size * 2; i++) {
+                randomized_videos.push(experiment_vids[i])
+            }
+            randomized_videos = shuffle(randomized_videos, 0, block_size - 1)
+            randomized_videos = shuffle(randomized_videos, block_size, block_size * 2 - 1)
+
+            // show every trial from all blocks
+            for (var i = 0; i < randomized_videos.length; i++) {
+
+                // transition between blocks
+                if (i % block_size == 0) {
+                    var block_transition = {
+                        type: 'html-button-response',
+                        stimulus: `Beginning of a new block`,
+                        choices: ['Continue']
+                    }
+                    //timeline.push(block_transition)
+                }
+
+                // video trial
+                var block_trial = {
+                    type: 'video-button-response',
+                    stimulus: [randomized_videos[i]],
+                    choices: ['smile', 'frown'],
+                    button_html: [
+                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                        '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                    width: 550,
+                    controls: true,
+                    trial_duration: 60000,
+                    //response_allowed_while_playing: false,
+                    on_finish: function (data) {
+                        if (data.response == 0)
+                            data.answer = 'smile'
+                        else if (data.response == 1)
+                            data.answer = 'frown'
+                        else
+                            data.answer = 'no answer'
+                    }
+                }
+                //timeline.push(block_trial)
+            }
+
+
+            // METHOD 3: randomized blocks of 5 + fixed attention-getting trials ---------------//
+
+            randomized_videos = shuffle(experiment_vids)
+            block_size = 5
+            for (var i = 0; i < block_size * 4; i++) {
+
+                // attention-getting slide between blocks
+                if (i % block_size == 0 && i > 0) {
+                    // temporary attention-getting slide
+                    var attention_slide = {
+                        type: 'html-button-response',
+                        stimulus: '<b>Can you find the smiley face?</b>',
+                        choices: [':(', ':(', ':)'],
+                        button_html: [
+                            '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">',
+                            '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">',
+                            '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">']
+                    }
+                    timeline.push(attention_slide)
+                }
+
+                var random_trial1 = {
+                    type: 'video-button-response',
+                    stimulus: [randomized_videos[i]],
+                    choices: ['smile', 'frown'],
+                    button_html: [
+                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                        '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                    width: 550,
+                    controls: true,
+                    trial_duration: 1000,
+                    //response_allowed_while_playing: false,
+                    on_finish: function (data) {
+                        if (data.response == 0)
+                            data.answer = 'smile'
+                        else if (data.response == 1)
+                            data.answer = 'frown'
+                        else
+                            data.answer = 'no answer'
+                    }
+                }
+                timeline.push(random_trial1)
+            }
+
 
             /////////////////////////////////////
             // Training video stimuli section //
