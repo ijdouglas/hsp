@@ -59,13 +59,6 @@
 
             var timeline = []
 
-            var vid_count = {
-                type: 'html-button-response',
-                stimulus: 'Experiment videos: ' + experiment_vids.length + ', training videos: ' + training_vids.length,
-                choices: ['ok']
-            }
-            //timeline.push(vid_count)
-
             /////////////////////////////////
             // Opening information slides //
             ///////////////////////////////
@@ -78,26 +71,8 @@
             // Audio check section  //
             /////////////////////////
 
-            var sound_check_instructions = {
-                type: 'html-button-response',
-                stimulus: `
-                <h1>Sound Check</h1>
-                <p>In this next section you'll hear a word.</p>
-                <p><b>Please make sure your audio is turned on so that you can hear it.</b></p>
-                <p>Select the word you heard among the available options</p>
-                <p>Press the button to proceed to sound check</p>`,
-                choices: ['Next']
-            }
             //timeline.push(sound_check_instructions)
-
-            var audio_check = {
-                type: 'audio-button-response-custom',
-                stimulus: 'data/audio_check/elephant.mp3',  // file path to the sound file
-                choices: ['monkey', "elephant", "tornado", "strawberry", "book", "car"],
-                prompt: "<p>What word did you hear?</p>"
-            };
             //timeline.push(audio_check)
-
 
             //////////////////////////////////
             // Standford touch screen game //
@@ -109,10 +84,12 @@
             }*/
             //timeline.push(touch_screen_game)
 
+
             ////////////////////////
             // Touch screen game //
             //////////////////////
 
+            // find the different image
             var touch_screen_game = {
                 type: 'html-button-response',
                 stimulus: 'Choose the one that is different',
@@ -166,7 +143,14 @@
             /////////////////////////////
             var randomized_videos = []
 
-            // METHOD 1: completely randomized ---------------//
+            // ORDER 1: completely randomized ---------------//
+
+            var order1_slide = {
+                type: 'html-button-response',
+                stimulus: 'Order 1: completely randomized videos',
+                choices: ['Continue']
+            }
+            timeline.push(order1_slide)
 
             randomized_videos = shuffle(experiment_vids)
             for (var i = 0; i < randomized_videos.length; i++) {
@@ -178,7 +162,7 @@
                         '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
                         '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
                     width: 550,
-                    controls: true,
+                    //controls: true,
                     trial_duration: 60000,
                     //response_allowed_while_playing: false,
                     on_finish: function (data) {
@@ -190,11 +174,18 @@
                             data.answer = 'no answer'
                     }
                 }
-                //timeline.push(random_trial)
+                timeline.push(random_trial)
             }
 
 
-            // METHOD 2: randomized in 2 blocks ---------------//
+            // ORDER 2: randomized in 2 blocks ---------------//
+
+            var order2_slide = {
+                type: 'html-button-response',
+                stimulus: 'Order 2: split videos into 2 blocks, then randomize the order in each block',
+                choices: ['Continue']
+            }
+            timeline.push(order2_slide)
 
             var block_size = 20
 
@@ -213,10 +204,10 @@
                 if (i % block_size == 0) {
                     var block_transition = {
                         type: 'html-button-response',
-                        stimulus: `Beginning of a new block`,
+                        stimulus: `This is the beginning of a new block`,
                         choices: ['Continue']
                     }
-                    //timeline.push(block_transition)
+                    timeline.push(block_transition)
                 }
 
                 // video trial
@@ -228,7 +219,7 @@
                         '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
                         '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
                     width: 550,
-                    controls: true,
+                    //controls: true,
                     trial_duration: 60000,
                     //response_allowed_while_playing: false,
                     on_finish: function (data) {
@@ -240,11 +231,18 @@
                             data.answer = 'no answer'
                     }
                 }
-                //timeline.push(block_trial)
+                timeline.push(block_trial)
             }
 
 
-            // METHOD 3: randomized blocks of 5 + fixed attention-getting trials ---------------//
+            // ORDER 3: randomized blocks of 5 + fixed attention-getting trials ---------------//
+
+            var order3_slide = {
+                type: 'html-button-response',
+                stimulus: 'Order 3: randomize all videos, then divide into blocks of 5 with attention-getting trials in-between',
+                choices: ['Continue']
+            }
+            timeline.push(order3_slide)
 
             randomized_videos = shuffle(experiment_vids)
             block_size = 5
@@ -273,8 +271,8 @@
                         '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
                         '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
                     width: 550,
-                    controls: true,
-                    trial_duration: 1000,
+                    //controls: true,
+                    trial_duration: 60000,
                     //response_allowed_while_playing: false,
                     on_finish: function (data) {
                         if (data.response == 0)

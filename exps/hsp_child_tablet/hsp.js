@@ -173,6 +173,24 @@ var instructions = {
     choices: ['Continue']
 }
 
+var sound_check_instructions = {
+    type: 'html-button-response',
+    stimulus: `
+                <h1>Sound Check</h1>
+                <p>In this next section you'll hear a word.</p>
+                <p><b>Please make sure your audio is turned on so that you can hear it.</b></p>
+                <p>Select the word you heard among the available options</p>
+                <p>Press the button to proceed to sound check</p>`,
+    choices: ['Next']
+}
+
+var audio_check = {
+    type: 'audio-button-response-custom',
+    stimulus: 'data/audio_check/elephant.mp3',  // file path to the sound file
+    choices: ['monkey', "elephant", "tornado", "strawberry", "book", "car"],
+    prompt: "<p>What word did you hear?</p>"
+}
+
 // training trials instructions
 var instruction_training = {
     type: 'html-button-response',
