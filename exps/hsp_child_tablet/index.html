@@ -74,6 +74,7 @@
             //timeline.push(sound_check_instructions)
             //timeline.push(audio_check)
 
+
             //////////////////////////////////
             // Standford touch screen game //
             ////////////////////////////////
@@ -85,12 +86,12 @@
             //timeline.push(touch_screen_game)
 
 
-            ////////////////////////
-            // Touch screen game //
-            //////////////////////
+            /////////////////////////
+            // Touch screen games //
+            ///////////////////////
 
             // find the different image
-            var touch_screen_game = {
+            var choose_different_image_game = {
                 type: 'html-button-response',
                 stimulus: 'Choose the one that is different',
                 choices: ['-', '-', 'x', '-'],
@@ -109,7 +110,38 @@
                         data.answer = 'incorrect'
                 }
             }
-            timeline.push(touch_screen_game)
+            timeline.push(choose_different_image_game)
+
+            // drag images into the circle/area
+            var sorting_stimuli = []
+            for (var i = 0; i < 3; i++) {
+                sorting_stimuli.push("images/sun.jpg")
+                sorting_stimuli.push("images/moon.jpg")
+            }
+
+            var sorting_game = {
+                type: 'free-sort',
+                stimuli: sorting_stimuli,
+                border_width: 10,
+                prompt: '<p>Can you put <b>suns on the left side</b> and <b>moons on the right side?</b></p>',
+                counter_text_unfinished: 'You still need to place %n% thing%s% inside the circle.',
+                counter_text_finished: '<b>Good job! You did it!</b>'
+            }
+            timeline.push(sorting_game)
+
+            var drag_smiley_game = {
+                type: 'free-sort',
+                stimuli: ["images/fish.jpg"],
+                sort_area_shape: "square",
+                stim_height: 90,
+                stim_width: 100,
+                sort_area_height: 500,
+                sort_area_width: 500,
+                prompt: '<p>Can you drag the <b>fish</b> to the <b>upper right corner</b>?</p>',
+                counter_text_unfinished: '',
+                counter_text_finished: '<b>Good job! You did it!</b>'
+            }
+            timeline.push(drag_smiley_game)
 
 
             ///////////////////////////////////////////
