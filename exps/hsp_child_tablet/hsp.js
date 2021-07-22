@@ -12,20 +12,53 @@ var welcome = {
 var instructions = {
     type: 'html-button-response',
     stimulus: `<h1>Instructions</h1>
-    <p align="justify">You will watch a set of short videos recorded during a parent-child play session and play a guessing game.
-    Each of these videos is extracted from the moment when parent mentioned an action verb in toy play. The actual verb parent said is replaced by an artificial word.
-    Your task is to carefully watch the video and then guess the verb that parents produced at the moment, indicated by the artificial word.</p>
-    
+    <p align="justify">You will watch a set of short videos and play a guessing game.
+    Your task is to carefully watch the video and then guess the verb that was produced.</p>
+
     <p align="justify">Please keep in mind that the verbs you are asked to guess are all <b>concrete action verbs</b> such as "jump" and "clap".
     We are not asking you to guess abstract and general verbs like "think", "see/look", "do", or "make".
     Please enter correctly spelled <b>English</b> verbs in <b>present tense only</b>.</p>
 
-    <p align="justify">Each video will only be played once, so make sure you pay close attention to the entire video and only start typing the answer after the video.
-    After the video, you have 40 seconds to enter your response. If you are unsure or do not know, please still try to provide your best guess within 40 seconds.
+    <p align="justify">Each video will only be played once, so make sure you pay close attention to the entire video.
+    After the video, you have 40 seconds to enter your response.
     If you did not enter a valid answer after 40 seconds, the next trial will start. If you <b>miss 5 consecutive trials</b>, the study will automatically stop.</p>
 
     <p align="justify">The study session will last 20 min, please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>`,
     choices: ['Continue']
+}
+
+
+//////////////////
+// Game slides //
+////////////////
+
+// sort images in the circle/area
+var sorting_stimuli = []
+for (var i = 0; i < 3; i++) {
+    sorting_stimuli.push("images/sun.jpg")
+    sorting_stimuli.push("images/moon.jpg")
+}
+var sorting_game = {
+    type: 'free-sort',
+    stimuli: sorting_stimuli,
+    border_width: 10,
+    prompt: '<p>Can you put <b>suns on the left side</b> and <b>moons on the right side?</b></p>',
+    counter_text_unfinished: 'You still need to place %n% thing%s% inside the circle.',
+    counter_text_finished: '<b>Good job! You did it!</b>'
+}
+
+// drag an image into the area
+var drag_image_game = {
+    type: 'free-sort',
+    stimuli: ["images/fish.jpg"],
+    sort_area_shape: "square",
+    stim_height: 90,
+    stim_width: 100,
+    sort_area_height: 500,
+    sort_area_width: 500,
+    prompt: '<p>Can you drag the <b>fish</b> to the <b>upper right corner</b>?</p>',
+    counter_text_unfinished: '',
+    counter_text_finished: '<b>Good job! You did it!</b>'
 }
 
 
@@ -37,25 +70,25 @@ var instructions = {
 var ask_name = {
     type: 'survey-html-form',
     preamble: 'What is your name?',
-    html: '<input name="name" type="text" />'
+    html: '<input name="name" type="text" required="true" />'
 }
 
 var ask_age = {
     type: 'survey-html-form',
     preamble: 'Please indicate your age:',
-    html: '<input name="age" type="number" />'
+    html: '<input name="age" type="number" required="true" />'
 }
 
 var ask_date = {
     type: 'survey-html-form',
     preamble: "Please select today's date:",
-    html: '<input name="date" type="date" />'
+    html: '<input name="date" type="date" required="true" />'
 }
 
 var ask_ID = {
     type: 'survey-html-form',
     preamble: 'What is your ID?',
-    html: '<input name="ID" type="number" />'
+    html: '<input name="ID" type="number" required="true" />'
 }
 
 

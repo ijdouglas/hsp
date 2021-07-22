@@ -36,7 +36,6 @@
             var stimuli_set = data["videos"] // gather videos into stimuli set
             var training_vids = []
             var experiment_vids = []
-            var block_location = data["block_location"] // get block location
 
             // separate training videos from experimental videos
             for (var i = 0; i < stimuli_set.length; i++) {
@@ -61,71 +60,49 @@
             // Touch screen games //
             ///////////////////////
 
-            // drag images into the circle/area
-            var sorting_stimuli = []
-            for (var i = 0; i < 3; i++) {
-                sorting_stimuli.push("images/sun.jpg")
-                sorting_stimuli.push("images/moon.jpg")
-            }
-
-            var sorting_game = {
-                type: 'free-sort',
-                stimuli: sorting_stimuli,
-                border_width: 10,
-                prompt: '<p>Can you put <b>suns on the left side</b> and <b>moons on the right side?</b></p>',
-                counter_text_unfinished: 'You still need to place %n% thing%s% inside the circle.',
-                counter_text_finished: '<b>Good job! You did it!</b>'
-            }
             timeline.push(sorting_game)
-
-            var drag_image_game = {
-                type: 'free-sort',
-                stimuli: ["images/fish.jpg"],
-                sort_area_shape: "square",
-                stim_height: 90,
-                stim_width: 100,
-                sort_area_height: 500,
-                sort_area_width: 500,
-                prompt: '<p>Can you drag the <b>fish</b> to the <b>upper right corner</b>?</p>',
-                counter_text_unfinished: '',
-                counter_text_finished: '<b>Good job! You did it!</b>'
-            }
             timeline.push(drag_image_game)
 
 
             ///////////////////////////////
             // Randomized order trials //
             /////////////////////////////
-        
-            // Randomized blocks & fixed attention-getting trials ---------------//
+
+            // Randomized blocks & fixed attention-getting trials
+
             var randomized_videos = shuffle(experiment_vids)
-            const block_size = 2
-            for (var i = 0; i < block_size * 3; i++) {
+            const block_size = 2    // specifies the number of videos in each block
+            for (var i = 0; i < block_size * 3; i++) { // i < total number of videos
 
                 // attention-getting slide between blocks
                 if (i % block_size == 0 && i > 0) {
+                    var random_num = -1
 
-                    // find the different image
-                    var spot_different_image_game = {
-                        type: 'html-button-response',
-                        stimulus: 'Choose the one that is different',
-                        choices: ['-', '-', 'x', '-'],
-                        button_html: [
-                            '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
-                            '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
-                            '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">',
-                            '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">'],
-                        //trial_duration: 60000,    // default: null, set number to specify time limit
-                        on_finish: function (data) {
-                            if (data.response == 2)
-                                data.answer = 'correct'
-                            else if (data.response == null)
-                                data.answer = 'no answer'
-                            else
-                                data.answer = 'incorrect'
+                    for (var j = 0; j < 2; j++) {
+                        // array of identical image objects for game
+                        var image_array = [
+                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
+                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
+                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
+                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
+                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">']
+
+                        // randomly choose an image to be the different one
+                        var temp = Math.floor(Math.random() * 5)
+                        while (temp == random_num)
+                            temp = Math.floor(Math.random() * 5)
+                        random_num = temp
+                        image_array[random_num] = '<img src="images/butterfly2.jpg" width="150" height="100" border="0" alt="javascript button">'
+
+                        var spot_different_image_game = {
+                            type: 'html-button-response',
+                            stimulus: '<h3>Can you choose the one that is different?</h3>',
+                            choices: ['-', '-', '-', '-', '-'],
+                            button_html: image_array,
+                            //trial_duration: 60000
                         }
+                        timeline.push(spot_different_image_game)
                     }
-                    timeline.push(spot_different_image_game)
                 }
 
                 var random_trial = {
@@ -134,7 +111,7 @@
                     choices: ['smile', 'frown'],
                     button_html: [
                         '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
-                        '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                        '<img src="images/frown.jpg" width="110" height="110" border="0" alt="javascript button">'],
                     width: 550,
                     //controls: true,
                     trial_duration: 60000,
