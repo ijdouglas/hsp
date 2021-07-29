@@ -18,7 +18,6 @@
 
 <script>
     var ID;
-    //<div class="slide" id="training"></div>
     // get the client IP address
     var req = new XMLHttpRequest();
     req.overrideMimeType("application/json");
@@ -30,22 +29,10 @@
     req.send(null);
 
     console.log(ID)
-    fetch("data/condition1.json") // json file should have {"videos":.mp4 files, "block_location":1,0,1,1,etc}
+    fetch(video_order_file) 
         .then(res => res.json())
         .then(data => {
-            var stimuli_set = data["videos"] // gather videos into stimuli set
-            var training_vids = []
-            var experiment_vids = []
-
-            // separate training videos from experimental videos
-            for (var i = 0; i < stimuli_set.length; i++) {
-                // if video name contains "sample", add to training videos set; else add to experiment videos set
-                if (stimuli_set[i].search("sample") != -1)
-                    training_vids.push(stimuli_set[i])
-                else
-                    experiment_vids.push(stimuli_set[i])
-            }
-
+            
             var timeline = []
 
             /////////////////////////////////
@@ -56,89 +43,37 @@
             timeline.push(instructions)
 
 
-            /////////////////////////
-            // Touch screen games //
-            ///////////////////////
+            //////////////////
+            // Intro Games //
+            ////////////////
 
             timeline.push(sorting_game)
             timeline.push(drag_image_game)
 
 
-            ///////////////////////////////
-            // Randomized order trials //
-            /////////////////////////////
+            ///////////////////
+            // Video trials //
+            /////////////////
 
-            // Randomized blocks & fixed attention-getting trials
+            timeline.push(start_videos)
 
-            var randomized_videos = shuffle(experiment_vids)
-            const block_size = 2    // specifies the number of videos in each block
-            for (var i = 0; i < block_size * 3; i++) { // i < total number of videos
+            // add all video trials & attention getting slides to the timeline
+            for (var i = 0; i < video_trial_timeline.length; i++)
+                timeline.push(video_trial_timeline[i])
 
-                // attention-getting slide between blocks
-                if (i % block_size == 0 && i > 0) {
-                    var random_num = -1
-
-                    for (var j = 0; j < 2; j++) {
-                        // array of identical image objects for game
-                        var image_array = [
-                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
-                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
-                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
-                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">',
-                            '<img src="images/butterfly.jpg" width="150" height="100" border="0" alt="javascript button">']
-
-                        // randomly choose an image to be the different one
-                        var temp = Math.floor(Math.random() * 5)
-                        while (temp == random_num)
-                            temp = Math.floor(Math.random() * 5)
-                        random_num = temp
-                        image_array[random_num] = '<img src="images/butterfly2.jpg" width="150" height="100" border="0" alt="javascript button">'
-
-                        var spot_different_image_game = {
-                            type: 'html-button-response',
-                            stimulus: '<h3>Can you choose the one that is different?</h3>',
-                            choices: ['-', '-', '-', '-', '-'],
-                            button_html: image_array,
-                            //trial_duration: 60000
-                        }
-                        timeline.push(spot_different_image_game)
-                    }
-                }
-
-                var random_trial = {
-                    type: 'video-button-response',
-                    stimulus: [randomized_videos[i]],
-                    choices: ['smile', 'frown'],
-                    button_html: [
-                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
-                        '<img src="images/frown.jpg" width="110" height="110" border="0" alt="javascript button">'],
-                    width: 550,
-                    //controls: true,
-                    trial_duration: 60000,
-                    //response_allowed_while_playing: false,
-                    on_finish: function (data) {
-                        if (data.response == 0)
-                            data.answer = 'smile' 
-                        else if (data.response == 1)
-                            data.answer = 'frown'
-                        else
-                            data.answer = 'no answer'
-                    }
-                }
-                timeline.push(random_trial)
-            }
+            timeline.push(finish_videos)
 
 
-            ////////////////////////////
-            // Demographic questions //
-            //////////////////////////
+            ////////////////
+            // Questions //
+            //////////////
 
             timeline.push(ask_name)
             timeline.push(ask_age)
             timeline.push(ask_date)
             timeline.push(ask_ID)
 
-            timeline.push(end_slide)
+            timeline.push(final_slide)
 
             jsPsych.data.addProperties({ subject: ID });
 

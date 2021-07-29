@@ -1,7 +1,21 @@
 
-//////////////////////////////////////
-// Instruction & transition slides //
-////////////////////////////////////
+////////////////
+// Variables //
+//////////////
+
+const attention_getter_count = 2 // this specifies the number of attention getting slides to show between each block
+
+const video_order_file = "data/condition1.json" // json file should have the format {"videos": [.mp4 files], "block_location": [1,0,1,1,etc]}
+
+// images for attention getting slides
+const gameA_image1 = '<img src="images/butterfly1.jpg" width="150" height="100" border="0" alt="javascript button">'
+const gameA_image2 = '<img src="images/butterfly2.jpg" width="150" height="100" border="0" alt="javascript button">'
+const gameB_image1 = '<img src="images/flower1.jpg" width="100" height="130" border="0" alt="javascript button">'
+const gameB_image2 = '<img src="images/flower2.jpg" width="100" height="130" border="0" alt="javascript button">'
+
+/////////////////////////
+// Instruction slides //
+///////////////////////
 
 var welcome = {
     type: 'html-button-response',
@@ -13,26 +27,44 @@ var instructions = {
     type: 'html-button-response',
     stimulus: `<h1>Instructions</h1>
     <p align="justify">You will watch a set of short videos and play a guessing game.
-    Your task is to carefully watch the video and then guess the verb that was produced.</p>
+    Your task is to carefully watch the video and then choose if the verb matches matches the video.</p>
 
-    <p align="justify">Please keep in mind that the verbs you are asked to guess are all <b>concrete action verbs</b> such as "jump" and "clap".
-    We are not asking you to guess abstract and general verbs like "think", "see/look", "do", or "make".
-    Please enter correctly spelled <b>English</b> verbs in <b>present tense only</b>.</p>
+    <p align="justify"> The video are split into 3 blocks with slides in-between, and each block has two video trials. </p>
 
     <p align="justify">Each video will only be played once, so make sure you pay close attention to the entire video.
-    After the video, you have 40 seconds to enter your response.
-    If you did not enter a valid answer after 40 seconds, the next trial will start. If you <b>miss 5 consecutive trials</b>, the study will automatically stop.</p>
+    After the video, you have 40 seconds to enter your response. If you did not enter a valid answer after 40 seconds, the next trial will start.
+    If you <b>miss 5 consecutive trials</b>, the study will automatically stop.</p>
 
-    <p align="justify">The study session will last 20 min, please make sure you have enough time to finish the study in one session. There will be no breaks in between.</p>`,
+    <p align="justify">The study session will last 20 min, please make sure you have enough time to finish the study in one session.
+    There will be no breaks in between.</p>`,
     choices: ['Continue']
+}
+
+var start_videos = {
+    type: 'html-button-response',
+    stimulus: `<h2>Start of the experiment</h2><p>You will have 40 seconds to choose a response for each video.</p>`,
+    choices: ['Start']
+}
+
+var finish_videos = {
+    type: 'html-button-response',
+    stimulus: `<p>You have finished the experiment! Please fill out the next few questions.</p>`,
+    choices: ['Start']
+}
+
+var final_slide = {
+    type: 'html-button-response',
+    stimulus: '<b>That is the end of the study!</b><p>Thank you for participating!</p>',
+    //prompt: '<i>Press the button to finish.</i>',
+    choices: ['<b>Finish</b>']
 }
 
 
 //////////////////
-// Game slides //
+// Intro Games //
 ////////////////
 
-// sort images in the circle/area
+// Game 1: sort images in the circle/area
 var sorting_stimuli = []
 for (var i = 0; i < 3; i++) {
     sorting_stimuli.push("images/sun.jpg")
@@ -47,7 +79,7 @@ var sorting_game = {
     counter_text_finished: '<b>Good job! You did it!</b>'
 }
 
-// drag an image into the area
+// Game 2: drag an image into the area
 var drag_image_game = {
     type: 'free-sort',
     stimuli: ["images/fish.jpg"],
@@ -62,10 +94,87 @@ var drag_image_game = {
 }
 
 
+//////////////////////////////////////
+// Attention getter + Video trials //
+////////////////////////////////////
 
-///////////////////
-// End of study //
-/////////////////
+var video_trial_timeline = [] // timeline for video trials & attention getting slides
+
+// variables for attention getter
+var image1 = ''
+var image2 = ''
+var alternateImages = false
+
+// attention getter
+var spot_different_image_game = {
+    type: 'html-button-response',
+    stimulus: '<h3>Can you choose the one that is different?</h3>',
+    choices: ['-', '-', '-', '-', '-'],
+    button_html: function () {
+        if (alternateImages == false) {
+            image1 = gameA_image1
+            image2 = gameA_image2
+        } else {
+            image1 = gameB_image1
+            image2 = gameB_image2
+        }
+        alternateImages = !alternateImages
+
+        // create array of identical image objects for game
+        var image_array = [image1, image1, image1, image1, image1]
+
+        // randomly choose an image to be different
+        var random_num = Math.floor(Math.random() * image_array.length)
+        image_array[random_num] = image2
+        return image_array
+    }
+}
+
+// add video trials and insert attention getters (using json file with video orders)
+fetch(video_order_file)
+    .then(res => res.json())
+    .then(data => {
+
+        var stimuli_set = data["videos"]            // gather videos for the experiment
+        var block_location = data["block_location"] // gather block numbers assigned to each video
+
+        for (var i = 0; i < stimuli_set.length; i++) {
+
+            // add attention getter at the start of a new block
+            if (block_location[i] == 1) {
+                for (var j = 0; j < attention_getter_count; j++)
+                    video_trial_timeline.push(spot_different_image_game)
+            }
+
+            // video trials
+            var video_trial = {
+                type: 'video-button-response',
+                stimulus: [stimuli_set[i]],
+                choices: ['smile', 'frown'],
+                button_html: [
+                    '<img src="images/smile.jpg" width="110" height="110" border="0" alt="javascript button">',
+                    '<img src="images/frown.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                width: 550,
+                trial_duration: 40000,
+                //response_allowed_while_playing: false,
+                on_finish: function (data) {
+                    if (data.response == 0)
+                        data.answer = 'smile'
+                    else if (data.response == 1)
+                        data.answer = 'frown'
+                    else
+                        data.answer = 'no answer'
+                }
+            }
+
+            video_trial_timeline.push(video_trial)
+        } // end of for-loop
+
+    })
+
+////////////////
+// Questions //
+//////////////
 
 var ask_name = {
     type: 'survey-html-form',
@@ -92,32 +201,9 @@ var ask_ID = {
 }
 
 
-// end slide
-var end_slide = {
-    type: 'html-button-response',
-    stimulus: `<b>That is the end of the study!</b><p>Thank you for participating!</p>`,
-    choices: ['Finish']
-}
-
 ////////////////
 // Functions //
 //////////////
-
-// shuffle an array's elements
-function shuffle(array) {
-    return shuffle(array, 0, array.length - 1);
-}
-
-// shuffle an array's elements within specified range (inclusive)
-function shuffle(array, startIndex, endIndex) {
-    for (let i = endIndex; i > startIndex; i--) {
-        const j = Math.floor(Math.random() * i)
-        const temp = array[i]
-        array[i] = array[j]
-        array[j] = temp
-    }
-    return array;
-}
 
 // get file name from file path
 function baseName(str) {
@@ -125,14 +211,6 @@ function baseName(str) {
     if (base.lastIndexOf(".") != -1)
         base = base.substring(0, base.lastIndexOf("."));
     return base;
-}
-
-// check if response is not empty
-function validate_response(resp) {
-    if (resp.length > 0)
-        return true;
-    else
-        return false;
 }
 
 function reqListener() {
