@@ -3,15 +3,21 @@
 // Variables //
 //////////////
 
-const attention_getter_count = 2 // this specifies the number of attention getting slides to show between each block
+// this specifies the number of attention getting slides to show between each block
+const attention_getter_count = 2 
 
+// file that specifies video order and blocks
 const video_order_file = "data/condition1.json" // json file should have the format {"videos": [.mp4 files], "block_location": [1,0,1,1,etc]}
 
-// images for attention getting slides
+// image html for attention getters (alternates between game A and game B images)
 const gameA_image1 = '<img src="images/butterfly1.jpg" width="150" height="100" border="0" alt="javascript button">'
 const gameA_image2 = '<img src="images/butterfly2.jpg" width="150" height="100" border="0" alt="javascript button">'
 const gameB_image1 = '<img src="images/flower1.jpg" width="100" height="130" border="0" alt="javascript button">'
 const gameB_image2 = '<img src="images/flower2.jpg" width="100" height="130" border="0" alt="javascript button">'
+
+// image html for video trials
+const happy_face = '<img src="images/smile.jpg" width="110" height="110" border="0" alt="javascript button">'
+const sad_face = '<img src="images/frown.jpg" width="110" height="110" border="0" alt="javascript button">'
 
 /////////////////////////
 // Instruction slides //
@@ -100,7 +106,7 @@ var drag_image_game = {
 
 var video_trial_timeline = [] // timeline for video trials & attention getting slides
 
-// variables for attention getter
+// variables for attention getter plugin (leave it as it is)
 var image1 = ''
 var image2 = ''
 var alternateImages = false
@@ -150,13 +156,11 @@ fetch(video_order_file)
             var video_trial = {
                 type: 'video-button-response',
                 stimulus: [stimuli_set[i]],
-                choices: ['smile', 'frown'],
-                button_html: [
-                    '<img src="images/smile.jpg" width="110" height="110" border="0" alt="javascript button">',
-                    '<img src="images/frown.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                choices: ['happy', 'sad'],
+                button_html: [happy_face, sad_face],
                 width: 550,
                 trial_duration: 40000,
-                //response_allowed_while_playing: false,
+                response_allowed_while_playing: false,
                 on_finish: function (data) {
                     if (data.response == 0)
                         data.answer = 'smile'
