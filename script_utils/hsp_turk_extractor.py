@@ -10,8 +10,11 @@ import scipy.io as sio
 import numpy as np
 from hsp_turk_utils import basic_corrections, write_data, blinder, unblinder, extract_video, update_dict
 from hanziconv import HanziConv
+from collections import Counter
 
-
+unique = []
+overall = []
+overall_subset = {"shake":[],"hold":[],"eat":[],"fall":[],"drive":[],"turn":[],"put":[],"cut":[],"fit":[],"knock":[],"stack":[]}
 
 #REQUIRES THESE TWO FILES IN THE SAME DIRECTORY
 dictionary_csv = list(csv.reader(open("hsp_voc.csv")))
@@ -163,6 +166,10 @@ def extract_data(dir,target_dir,experiment, save):
                                 else:
                                     guess = filename["words"][0].strip()
                                     lemma = HanziConv.toSimplified(guess).strip()
+                                    overall.append(lemma)
+                                    overall_subset[target].append(lemma)
+                                    if lemma not in unique:
+                                        unique.append(lemma)
                                 
                                 if lemma == "na":
                                     lemma = "N/A"
@@ -406,4 +413,16 @@ if len(not_in) != 0:
     if x == "y":
         update_dict(not_in, maxx, word_dict)
 
-print(demo)
+print()
+print("Unique:")
+print(unique)
+print()
+print("Overall frequency")
+print(Counter(overall))
+print()
+for target in ["shake","hold","eat","fall","drive","turn","put","cut","fit","knock","stack"]:
+    subset = overall_subset[target]
+    print(target)
+    print(Counter(subset))
+    print()
+
