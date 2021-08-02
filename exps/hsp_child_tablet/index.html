@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Verb guessing game</title>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-html-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-text.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-instructions.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-audio-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-select.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/plugins/jspsych-survey-html-form.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-survey-likert.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-html-slider-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-video-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-call-function.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+    <script src="./consent.js"></script>
+    <script src="./hsp.js"></script>
+    <script src="./audio_check.js"></script>
+    </link>
+</head>
+
+<body></body>
+
+<script>
+    var ID;
+    //<div class="slide" id="training"></div>
+    // get the client IP address
+    var req = new XMLHttpRequest();
+    req.overrideMimeType("application/json");
+    req.open('GET', 'https://jsonip.com', false);
+    req.onload = function () {
+        var jsonResponse = JSON.parse(req.responseText);
+        ID = jsonResponse["ip"].replace(new RegExp(':', 'g'), "-")
+    };
+    req.send(null);
+
+    console.log(ID)
+    fetch("data/condition1.json") // json file should have {"videos":.mp4 files, "block_location":1,0,1,1,etc}
+        .then(res => res.json())
+        .then(data => {
+            var stimuli_set = data["videos"] // gather videos into stimuli set
+            var training_vids = []
+            var experiment_vids = []
+            var block_location = data["block_location"] // get block location
+
+            // separate training videos from experimental videos
+            for (var i = 0; i < stimuli_set.length; i++) {
+                // if video name contains "sample", add to training videos set; else add to experiment videos set
+                if (stimuli_set[i].search("sample") != -1)
+                    training_vids.push(stimuli_set[i])
+                else
+                    experiment_vids.push(stimuli_set[i])
+            }
+
+            var timeline = []
+
+            var vid_count = {
+                type: 'html-button-response',
+                //stimulus: 'Experiment videos: ' + experiment_vids.length + ', training videos: ' + training_vids.length,
+                stimulus: 'Experiment videos: ' + experiment_vids,
+                choices: ['ok']
+            }
+            //timeline.push(vid_count)
+
+            /////////////////////////////////
+            // Opening information slides //
+            ///////////////////////////////
+
+            timeline.push(welcome)
+            // timeline.push(consent)
+            // timeline.push(instructions)
+
+            ///////////////////////////
+            // Audio check section  //
+            /////////////////////////
+
+            var sound_check_instructions = {
+                type: 'html-button-response',
+                stimulus: `
+                <h1>Sound Check</h1>
+                <p>In this next section you'll hear a word.</p>
+                <p><b>Please make sure your audio is turned on so that you can hear it.</b></p>
+                <p>Select the word you heard among the available options</p>
+                <p>Press the button to proceed to sound check</p>`,
+                choices: ['Next']
+            }
+            //timeline.push(sound_check_instructions)
+
+            var audio_check = {
+                type: 'audio-button-response-custom',
+                stimulus: 'data/audio_check/elephant.mp3',  // file path to the sound file
+                choices: ['monkey', "elephant", "tornado", "strawberry", "book", "car"],
+                prompt: "<p>What word did you hear?</p>"
+            };
+            //timeline.push(audio_check)
+
+
+            //////////////////////////////////
+            // Standford touch screen game //
+            ////////////////////////////////
+
+            /*var touch_screen_game = {
+                type: 'call-function',
+                func: experiment.training(0)
+            }*/
+            //timeline.push(touch_screen_game)
+
+            ////////////////////////
+            // Touch screen game //
+            //////////////////////
+
+            var touch_screen_game = {
+                type: 'html-button-response',
+                stimulus: 'Choose the one that is different',
+                choices: ['-', '-', 'x', '-'],
+                button_html: [
+                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                        '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">',
+                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                //trial_duration: 60000,    // default: null, set number to specify time limit
+                on_finish: function (data) {
+                    if (data.response == 2)
+                        data.answer = 'correct'
+                    else if (data.response == null)
+                        data.answer = 'no answer'
+                    else
+                        data.answer = 'incorrect'
+                }
+            }
+            timeline.push(touch_screen_game)
+
+
+            ////////////////////////////////////
+            // Video slide w/ image response //
+            //////////////////////////////////
+
+            var button_response = {
+                type: 'video-button-response',
+                stimulus: [training_vids[0]], // array of file paths to the video(s)
+                choices: ['smile', 'frown'],
+                button_html: [ // images as buttons
+                    '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                    '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                width: 550,
+                controls: true,                          // viewer have video controls (pausing/playback)
+                trial_duration: 60000,                   // default: null, set number to specify time limit
+                response_allowed_while_playing: false,   // response is enabled/disabled until video finishes
+                on_finish: function (data) {
+                    if (data.response == 0)
+                        data.answer = 'smile'
+                    else if (data.response == 1)
+                        data.answer = 'frown'
+                    else
+                        data.answer = 'no answer'
+                }
+            }
+            //timeline.push(button_response)
+
+            ///////////////////////////////
+            // Randomnized order trials //
+            /////////////////////////////
+            var randomized_videos = experiment_vids
+
+            // completely randomized (all experiment videos)
+            for (var i = 0; i < randomized_videos.length; i++) {
+                randomnized_videos = shuffle(experiment_vids)
+                var random_trial = {
+                    type: 'video-button-response',
+                    stimulus: [randomnized_videos[i]],      // array of file path(s) to the video
+                    choices: ['smile', 'frown'],
+                    button_html: [
+                        '<img src="images/smiley.jpg" width="110" height="110" border="0" alt="javascript button">',
+                        '<img src="images/frowny.jpg" width="110" height="110" border="0" alt="javascript button">'],
+                    width: 550,
+                    controls: true,                             // viewer have video controls (pausing/playback)
+                    trial_duration: 60000,                      // default: null, set number to specify time limit
+                    //response_allowed_while_playing: false,    // response is enabled/disabled until video finishes
+                    on_finish: function (data) {
+                        if (data.response == 0)
+                            data.answer = 'smile'
+                        else if (data.response == 1)
+                            data.answer = 'frown'
+                        else
+                            data.answer = 'no answer'
+                    }
+                }
+                timeline.push(random_trial)
+            }
+
+            // randomized in 2 blocks
+            
+            // randomized blocks of 5 + fixed attention-getting trials
+
+            /////////////////////////////////////
+            // Training video stimuli section //
+            ///////////////////////////////////
+
+            //timeline.push(instruction_training)
+
+            for (var i = 0; i < 1; i++) {   // for (var i = 0; i < training_vids.length; i++)
+                fname = baseName(training_vids[i])
+                word = fname.split("_")[0]
+                // example trial
+                var example_trial = {
+                    type: 'hsp-free-response',
+                    trial_duration: 60000,      // trial length (ms)
+                    sources: [training_vids[i]],// trial video
+                    num_responses: 3,           // number of free response
+                    width: 550,
+                    question: { prompt: "Please provide your top 3 guesses:", placeholder: '' },
+                    data: { word: word }        // correct verb answer for the trial
+                }
+                //timeline.push(example_trial)
+                // feedback
+                var example_trial_feedback = {
+                    type: 'html-button-response',
+                    stimulus: function () {
+                        return `
+                        <p>The correct verb for that video was: <b>${jsPsych.data.getLastTrialData().last(1).values()[0].word}</b></p>
+                        <p>You entered: <b>${JSON.parse(jsPsych.data.getLastTrialData().select("response").values[0]).words[0]}</b>, <b>${JSON.parse(jsPsych.data.getLastTrialData().select("response").values[0]).words[1]}</b>, and <b>${JSON.parse(jsPsych.data.getLastTrialData().select("response").values[0]).words[2]}</b></p>
+                        <p>Press the button to continue</p>`
+                    },
+                    choices: ['Continue']
+                }
+                //timeline.push(example_trial_feedback)
+            }
+
+            //timeline.push(end_training)
+
+
+            ////////////////////////////////////
+            // Testing video stimuli section //
+            //////////////////////////////////
+
+            //timeline.push(instruction_experiment)
+
+            for (var i = 0; i < 2; i++) { // for (var i = 0; i < experiment_vids.length; i++)
+                fname = baseName(experiment_vids[i])
+                word = fname.split("_")[0]
+                if (block_location[i] == 1) { // start new block of trials
+                    timeline.push(start_new_block)
+                }
+                // experiment trial
+                var experiment_trial = {
+                    type: 'hsp-free-response',
+                    trial_duration: 40000,          // trial length (ms)
+                    sources: [experiment_vids[i]],  // trial video
+                    num_responses: 3,               // number of free response
+                    width: 550,
+                    question: { prompt: "Please provide your top 3 guesses:", placeholder: '' },
+                    on_finish: function (data) {
+                        saveData(ID + "_experiment_data", jsPsych.data.get().csv());
+                    }
+                }
+                //timeline.push(experiment_trial)
+            }
+
+            ////////////////////////////
+            // Demographic questions //
+            //////////////////////////
+
+            //timeline.push(sex_demographic)
+            //timeline.push(age_demographic)
+
+            /* Commented out temporarily for mini-study
+            timeline.push(language_demographic)
+            timeline.push(other_demographic)
+            */
+
+            //timeline.push(end_block_turk)
+            timeline.push(end_slide)
+
+            jsPsych.data.addProperties({ subject: ID });
+
+            jsPsych.init({
+                timeline: timeline,
+                // preload_video: stimuli_set,
+                show_preload_progress_bar: false,
+                on_finish: function () { saveData(ID + "_experiment_data", jsPsych.data.get().csv()); },
+                on_trial_start: function (data) {
+                    console.log("trial started")
+                }
+            })
+        })
+
+
+</script>
+
+</html>
