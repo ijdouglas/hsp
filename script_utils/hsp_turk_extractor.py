@@ -9,23 +9,38 @@ import pandas as pd
 import scipy.io as sio
 import numpy as np
 from hsp_turk_utils import basic_corrections, write_data, blinder, unblinder, extract_video, update_dict
+from hanziconv import HanziConv
+
+
 
 #REQUIRES THESE TWO FILES IN THE SAME DIRECTORY
 dictionary_csv = list(csv.reader(open("hsp_voc.csv")))
 exp12 = pd.read_csv("video_information_11-9.csv")
 
-demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}}, "205":{"sex":[],"age":[]}}
-demo_no_reply = {"203":0,"204":0, "205":0}
+demo = {"203":{"sex":[],"age":[]},"204":{1:{"sex":[],"age":[]},2:{"sex":[],"age":[]}}, "205":{"sex":[],"age":[]},"206":{"sex":[],"age":[]}}
+demo_no_reply = {"203":0,"204":0, "205":0, "206":0}
 
 #Location where the data is saved. Must be a folder that has subfolders for each experiment
 #Ex. .../hsp_data/exp200 has all of the exp200 experiment_data.csv
 #.../hsp_data/exp201 has all of 201 etc
+################################################################
 walk_location = "/mnt/c/Users/wkw/Documents/Lab/hsp_data/"
+################################################################
 #walk_location = "/home/wkw/Desktop/"
 
 #Set to where you want the files to be saved. Program will create exp_20# folders where it will save the cleaned data and split into subfolders to hold the individual data
+################################################################
 target_dir = "/mnt/c/Users/wkw/Desktop/"
+################################################################
 #target_dir = "/home/wkw/Desktop/"
+
+################################################################
+col2check = {"200":11,"201":9, "202":9, "203":11, "204":11, "205":11, "206":10} #which column the data is in
+target_length = {"200":25, "201":33, "202":33, "203":33, "204":33, "205":21, "206":21} #cut-off to filter data, minimum length for subjects to complete
+block_ordering = {1:[1,2,3,4,5,6,7,8,9,10,11],2:[3,11,10,1,9,5,8,7,6,4,2]}
+block_dictionary = {"shake":1,"hold":2,"eat":3,"fall":4,"drive":5,"turn":6,"put":7,"cut":8,"fit":9,"knock":10,"stack":11}
+dict_201 = {"hold":1,"cut":2}
+################################################################
 
 spell = SpellChecker()
 lm = WordNetLemmatizer()
@@ -35,7 +50,7 @@ minn = 100
 min_word = ""
 maxx = 0
 max_word = ""
-block_ordering = {1:[1,2,3,4,5,6,7,8,9,10,11],2:[3,11,10,1,9,5,8,7,6,4,2]}
+
 
 words = {}
 #imports dictionary
@@ -54,11 +69,8 @@ for line in dictionary_csv:
     word_dict[word] = val
 
 not_in = []
-block_dictionary = {"shake":1,"hold":2,"eat":3,"fall":4,"drive":5,"turn":6,"put":7,"cut":8,"fit":9,"knock":10,"stack":11}
-dict_201 = {"hold":1,"cut":2}
+
 #valid = {}
-col2check = {"200":11,"201":9, "202":9, "203":11, "204":11, "205":11}
-target_length = {"200":25, "201":33, "202":33, "203":33, "204":33, "205":21}
 
 
 #Used to initialize the different csv
@@ -105,6 +117,8 @@ def extract_data(dir,target_dir,experiment, save):
                 for row in temp:
                     if row[0] != "rt" and len(row[col_val])!= 0: #used to ignore the first row
                         #below grabs the different information from the file
+                        #print(row)
+                        #print(row[col_val])
                         filename = json.loads(row[col_val])
                         video = filename["video"]
                         if "sample" not in video:
@@ -123,7 +137,7 @@ def extract_data(dir,target_dir,experiment, save):
                                 target_id = word_dict[target]
                             
 
-                            if experiment == "200" or experiment == "201" or experiment == "203":
+                            if experiment == "200" or experiment == "201" or experiment == "203" or experiment == "206":
                                 trial_in_block = 0
                                 block_id = 0
                                 condition = 1
@@ -142,9 +156,14 @@ def extract_data(dir,target_dir,experiment, save):
 
                             if experiment != "205":
                                 top_choice = 0
-                                guess = basic_corrections(filename["words"][0].strip())
-                                corrected = spell.correction(guess)
-                                lemma = lm.lemmatize(corrected, wn.VERB)
+                                if experiment != "206":
+                                    guess = basic_corrections(filename["words"][0].strip())
+                                    corrected = spell.correction(guess)
+                                    lemma = lm.lemmatize(corrected, wn.VERB)
+                                else:
+                                    guess = filename["words"][0].strip()
+                                    lemma = HanziConv.toSimplified(guess).strip()
+                                
                                 if lemma == "na":
                                     lemma = "N/A"
                                 if lemma not in word_dict.keys():
@@ -211,7 +230,7 @@ def extract_data(dir,target_dir,experiment, save):
                 savestring = given+"/cevent_guessed-word.mat"
 
                 if save == 1:
-                    #sio.savemat(savestring, final_structure)
+                    sio.savemat(savestring, final_structure)
                     write_data(slim_data,given+"/cleaned_data.csv")
                     os.system("cp "+source_file+" "+given+"/raw_data.csv")
                 subject+=1
@@ -222,7 +241,7 @@ def extract_data(dir,target_dir,experiment, save):
                 target_len = target_length[experiment]
                 for row in slim_data[1:]:
                     unfiltered_lean.append(row)
-                if experiment in ["200", "201", "203", "205"]:
+                if experiment in ["200", "201", "203", "205", "206"]:
                     if length >target_len:
                         df = pd.DataFrame(data =slim_data[1:], columns = slim_data[0])
                         entries = df.values
@@ -232,6 +251,7 @@ def extract_data(dir,target_dir,experiment, save):
                                 filtered_lean = np.vstack((filtered_lean,row))
 
                         if experiment in ["203","205"]:
+                            print()
                             temp2 = pd.read_csv(os.path.join(root,file))
                             responses = temp2["responses"].dropna()
                             if len(responses) > 1: #Demographic part
@@ -272,13 +292,28 @@ def extract_data(dir,target_dir,experiment, save):
 
     unfilt_lean =target_dir+"exp"+experiment+"_lean_unfilt_"+Date+".csv"
     write_data(unfiltered_lean,unfilt_lean)
+    print(unfiltered_lean)
 
 
 def general_walk(root_dir):
     dir = root_dir
     for root, dirs, files in os.walk(dir):
         dirs.sort()
-        if "exp205" in root and "cond" not in root:
+        if "exp206" in root and "cond" not in root:
+            print()
+            print("exp206", root)
+            experiment = "206"
+            x = input("run? (y/yes/1 for yes) ")
+            #x = "y"
+            if x == "y" or x == "yes" or x == "1":
+                save = input("save the csv files? (y/yes/1 for yes)")
+                #save = "n"
+                if save == "y" or save == "yes" or save == "1":
+                    save = 1
+                else:
+                    save = 0
+                extract_data(root, target_dir,experiment, save)
+        elif "exp205" in root and "cond" not in root:
             print()
             print("exp205", root)
             experiment = "205"
@@ -362,6 +397,7 @@ def general_walk(root_dir):
                 else:
                     save = 0
                 extract_data(root, target_dir,experiment, save)
+
 general_walk(walk_location)
 
 if len(not_in) != 0:
