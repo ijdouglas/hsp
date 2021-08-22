@@ -6,8 +6,10 @@
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-html-button-response.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-free-sort.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-video-keyboard-response.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-video-button-response.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-survey-html-form.js"></script>   
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-survey-html-form.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-fullscreen.js"></script>
     <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
     <script src="./hsp.js"></script>
     </link>
@@ -29,11 +31,13 @@
     req.send(null);
 
     console.log(ID)
-    fetch(video_order_file) 
+    fetch(video_json_file) 
         .then(res => res.json())
         .then(data => {
             
             var timeline = []
+
+            timeline.push(enter_fullscreen)
 
             /////////////////////////////////
             // Opening information slides //
@@ -58,8 +62,7 @@
             timeline.push(start_videos)
 
             // add all video trials & attention getting slides to the timeline
-            for (var i = 0; i < video_trial_timeline.length; i++)
-                timeline.push(video_trial_timeline[i])
+            video_trial_timeline.forEach(element => timeline.push(element))
 
             timeline.push(finish_videos)
 
@@ -73,7 +76,10 @@
             timeline.push(ask_date)
             timeline.push(ask_ID)
 
+
             timeline.push(final_slide)
+            timeline.push(exit_fullscreen)
+
 
             jsPsych.data.addProperties({ subject: ID });
 
