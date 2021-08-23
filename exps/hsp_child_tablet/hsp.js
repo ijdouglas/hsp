@@ -16,7 +16,7 @@
  * - The 0th index should be 0 even though it is the start of a block of training videos
  * - Example: [0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 1, 0, 0] is 2 blocks of 4 training videos, then 3 testing videos
  */
-const video_order_file = "data/condition.json" // json file should have the format {"videos": [.mp4 files], "block_location": [2,0,0,1,0,0,etc]}
+const video_json_file = "data/condition.json" // json file should have the format {"videos": [.mp4 files], "block_location": [2,0,0,1,0,0,etc]}
 
 // this specifies the number of attention getting slides to show between each block
 const attention_getter_count = 2 
@@ -225,7 +225,10 @@ fetch(video_json_file)
                     width: 550,
                     trial_duration: 40000,
                     response_allowed_while_playing: false,
-                    data: { verb: verb },
+                    data: {
+                        verb: verb,
+                        training_block_verb: training_block_verb
+                    },
                     on_finish: function (data) {
                         // record answer in data
                         if (data.response == 0)
