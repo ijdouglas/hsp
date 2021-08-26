@@ -113,10 +113,17 @@ for (var i = 0; i < 3; i++) {
 var sorting_game = {
     type: 'free-sort',
     stimuli: sorting_stimuli,
-    border_width: 10,
-    prompt: '<p>Can you put the suns and moons inside the circle?</p><p>Try to put <b>suns on the left side</b> and <b>moons on the right side.</b></p>',
-    counter_text_unfinished: 'You still need to place %n% thing%s% inside the circle.',
-    counter_text_finished: '<b>Good job! You did it!</b>'
+    sort_area_shape: "square",
+    border_width: 9,       // width of the border of the sort area
+    stim_height: 90,       // height of the stimuli images
+    stim_width: 90,        // width of the stimuli images
+    sort_area_height: 500, // height of the area that the stimuli can be moved into
+    sort_area_width: 500,  // width of the area that the stimuli can be moved into
+    prompt: `<b>Can you put the suns and moons inside the square?</b>
+             <p>Try to put suns on the left half and moons on the right half.</p>`,
+    counter_text_unfinished: '<i>You still need to place %n% thing%s% inside the circle.</i>',
+    counter_text_finished: '<b>Good job! You did it!</b>',
+    column_spread_factor: 1.2 // how far away the stimuli images are from the sort area
 }
 
 // Game 2: drag an image into the area
@@ -124,11 +131,12 @@ var drag_image_game = {
     type: 'free-sort',
     stimuli: ["data/images/fish.jpg"],
     sort_area_shape: "square",
-    stim_height: 90,
-    stim_width: 100,
-    sort_area_height: 500,
-    sort_area_width: 500,
-    prompt: '<p>Can you drag the <b>fish</b> inside the square?</p><p>Try to drag it to the <b>upper right corner</b> of the square?</p>',
+    stim_height: 90,        // height of the stimuli images
+    stim_width: 100,        // width of the stimuli images
+    sort_area_height: 350,  // height of the area that the stimuli can be moved into
+    sort_area_width: 500,   // width of the area that the stimuli can be moved into
+    prompt: `<b>Can you move the fish inside the rectangle?</b>
+             <p>Try to put it to the upper right corner of the rectangle.</p>`,
     counter_text_unfinished: '',
     counter_text_finished: '<b>Good job! You did it!</b>'
 }
@@ -206,21 +214,24 @@ fetch(video_json_file)
 
                 // plugin for training videos
                 var training_video = {
-                    type: 'video-keyboard-response',
+                    type: 'video-button-response',
                     stimulus: [stimuli_set[i]],
-                    choices: jsPsych.NO_KEYS,  // no keyboard responses allowed
-                    trial_ends_after_video: true,
+                    choices: [''],
                     width: 550,
-                    data: { verb: verb }
+                    trial_ends_after_video: true,
+                    response_allowed_while_playing: false,
+                    data: { verb: verb },
+                    post_trial_gap: 500
                 }
                 current_block.push(training_video)
+
             } else { 
                 // plugin for testing videos
                 var testing_video = {
                     type: 'video-button-response',
                     stimulus: [stimuli_set[i]],
                     prompt: "Is this the same verb?",
-                    choices: ['happy', 'sad'],
+                    choices: ['yes', 'no'],
                     button_html: [happy_face, sad_face],
                     width: 550,
                     trial_duration: 40000,
@@ -249,11 +260,13 @@ fetch(video_json_file)
                     }
                 }
                 current_block.push(testing_video)
+
             } // end of if-else statement
 
             // if reached end of block for training or testing, randomize videos and add to timeline
             if (i + 1 >= stimuli_set.length || block_location[i + 1] > 0) {
                 current_block = shuffle(current_block)
+
                 current_block.forEach(element => video_trial_timeline.push(element)) // add shuffled video slides to timeline
                 current_block = []
             }
