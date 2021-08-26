@@ -1,32 +1,14 @@
 {
-    "block_location": [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0 ],
+    "block_location": [ 0, 0, 0, 0, 0, 1, 0, 0, 0 ],
     "videos": [
         "data/vid_files/block 1 train/61797_Sprinkling_fenugreek-seeds_plastic-jar.mp4",
         "data/vid_files/block 1 train/116672_Sprinkling_button_a-plate.mp4",
         "data/vid_files/block 1 train/166203_Sprinkling_spice_tempeh.mp4",
         "data/vid_files/block 1 train/203447_Sprinkling_clips_the-table.mp4",
         "data/vid_files/block 1 train/205704_Sprinkling_coffee_a-container.mp4",
-        "data/vid_files/block 1 test/342_Sprinkling_papers_the-book.webm",
-        "data/vid_files/block 1 test/104800_Sprinkling_snow_a-fence.webm",
-        "data/vid_files/block 1 test/112783_Spilling_mouthwash_roll-on.webm",
-        "data/vid_files/block 1 test/129384_Spreading_carrot-peel_floor.webm",
-        "data/vid_files/block 2 train/23350_Unfolding_a-tissue.webm",
-        "data/vid_files/block 2 train/45981_Unfolding_oven-mit.webm",
-        "data/vid_files/block 2 train/75445_Unfolding_a-paper.webm",
-        "data/vid_files/block 2 train/115975_Unfolding_floor-mate.webm",
-        "data/vid_files/block 2 train/117072_Unfolding_sock.webm",
-        "data/vid_files/block 2 test/8020_Pulling_top-cover_pvc-pipe.webm",
-        "data/vid_files/block 2 test/131158_Unfolding_jeans-pant.webm",
-        "data/vid_files/block 2 test/186830_Burying_phone_cloth.webm",
-        "data/vid_files/block 2 test/208625_Unfolding_leaf.webm",
-        "data/vid_files/block 3 train/9353_Poking_an-apple.webm",
-        "data/vid_files/block 3 train/113750_Poking_paper-board.webm",
-        "data/vid_files/block 3 train/114503_Poking_candle-wax.webm",
-        "data/vid_files/block 3 train/143595_Poking_styrofoam.webm",
-        "data/vid_files/block 3 train/175635_Poking_the-salt.webm",
-        "data/vid_files/block 3 test/34657_Poking_soil.webm",
-        "data/vid_files/block 3 test/51861_Poking_honey.webm",
-        "data/vid_files/block 3 test/126303_Pretending_detergent_spoon.webm",
-        "data/vid_files/block 3 test/170933_Squeezing_cotton.webm"
+        "data/vid_files/block 1 test/342_Sprinkling_papers_the-book.mp4",
+        "data/vid_files/block 1 test/104800_Sprinkling_snow_a-fence.mp4",
+        "data/vid_files/block 1 test/112783_Spilling_mouthwash_roll-on.mp4",
+        "data/vid_files/block 1 test/129384_Spreading_carrot-peel_floor.mp4"
     ]
 }
