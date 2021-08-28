@@ -106,7 +106,7 @@ var final_slide = {
 
 // Game 1: sort images in the circle/area
 var sorting_stimuli = []
-for (var i = 0; i < 3; i++) {
+for (var i = 0; i < 1; i++) {
     sorting_stimuli.push("data/images/sun.jpg")
     sorting_stimuli.push("data/images/moon.jpg")
 }
@@ -117,13 +117,12 @@ var sorting_game = {
     border_width: 9,       // width of the border of the sort area
     stim_height: 90,       // height of the stimuli images
     stim_width: 90,        // width of the stimuli images
-    sort_area_height: 500, // height of the area that the stimuli can be moved into
-    sort_area_width: 500,  // width of the area that the stimuli can be moved into
-    prompt: `<b>Can you put the suns and moons inside the square?</b>
-             <p>Try to put suns on the left half and moons on the right half.</p>`,
+    sort_area_height: 300, // height of the area that the stimuli can be moved into
+    sort_area_width: 400,  // width of the area that the stimuli can be moved into
+    prompt: `<b>Can you put the sun and moon inside the rectangle?</b>
+             <p>Try to put the sun on the left and the moon on the right.</p>`,
     counter_text_unfinished: '<i>You still need to place %n% thing%s% inside the circle.</i>',
-    counter_text_finished: '<b>Good job! You did it!</b>',
-    column_spread_factor: 1.2 // how far away the stimuli images are from the sort area
+    counter_text_finished: '<b>Good job! You did it!</b>'
 }
 
 // Game 2: drag an image into the area
@@ -133,10 +132,10 @@ var drag_image_game = {
     sort_area_shape: "square",
     stim_height: 90,        // height of the stimuli images
     stim_width: 100,        // width of the stimuli images
-    sort_area_height: 350,  // height of the area that the stimuli can be moved into
-    sort_area_width: 500,   // width of the area that the stimuli can be moved into
+    sort_area_height: 300,  // height of the area that the stimuli can be moved into
+    sort_area_width: 400,   // width of the area that the stimuli can be moved into
     prompt: `<b>Can you move the fish inside the rectangle?</b>
-             <p>Try to put it to the upper right corner of the rectangle.</p>`,
+             <p>Try to put it at the upper right corner of the rectangle.</p>`,
     counter_text_unfinished: '',
     counter_text_finished: '<b>Good job! You did it!</b>'
 }
