@@ -9,6 +9,24 @@
         "data/vid_files/block 1 test/342_Sprinkling_papers_the-book.mp4",
         "data/vid_files/block 1 test/104800_Sprinkling_snow_a-fence.mp4",
         "data/vid_files/block 1 test/112783_Spilling_mouthwash_roll-on.mp4",
-        "data/vid_files/block 1 test/129384_Spreading_carrot-peel_floor.mp4"
+        "data/vid_files/block 1 test/129384_Spreading_carrot-peel_floor.mp4",
+        "data/vid_files/block 2 train/23350_Unfolding_a-tissue.mp4",
+        "data/vid_files/block 2 train/45981_Unfolding_oven-mit.mp4",
+        "data/vid_files/block 2 train/75445_Unfolding_a-paper.mp4",
+        "data/vid_files/block 2 train/115975_Unfolding_floor-mate.mp4",
+        "data/vid_files/block 2 train/117072_Unfolding_sock.mp4",
+        "data/vid_files/block 2 test/8020_Pulling_top-cover_pvc-pipe.mp4",
+        "data/vid_files/block 2 test/131158_Unfolding_jeans-pant.mp4",
+        "data/vid_files/block 2 test/186830_Burying_phone_cloth.mp4",
+        "data/vid_files/block 2 test/208625_Unfolding_leaf.mp4",
+        "data/vid_files/block 3 train/9353_Poking_an-apple.mp4",
+        "data/vid_files/block 3 train/113750_Poking_paper-board.mp4",
+        "data/vid_files/block 3 train/114503_Poking_candle-wax.mp4",
+        "data/vid_files/block 3 train/143595_Poking_styrofoam.mp4",
+        "data/vid_files/block 3 train/175635_Poking_the-salt.mp4",
+        "data/vid_files/block 3 test/34657_Poking_soil.mp4",
+        "data/vid_files/block 3 test/51861_Poking_honey.mp4",
+        "data/vid_files/block 3 test/126303_Pretending_detergent_spoon.mp4",
+        "data/vid_files/block 3 test/170933_Squeezing_cotton.mp4"
     ]
 }
