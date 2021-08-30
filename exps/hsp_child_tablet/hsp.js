@@ -216,6 +216,7 @@ fetch(video_json_file)
                     type: 'video-button-response',
                     stimulus: [stimuli_set[i]],
                     choices: [''],
+                    button_html: '<img src="data/images/transparent_image.png" width="5" height="5" border="0" alt="javascript button">',
                     width: 550,
                     trial_ends_after_video: true,
                     response_allowed_while_playing: false,
