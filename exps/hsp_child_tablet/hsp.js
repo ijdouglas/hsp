@@ -48,6 +48,7 @@ var exit_fullscreen = {
     fullscreen_mode: false
 }
 
+// first welcoming slide
 var welcome = {
     type: 'html-button-response',
     stimulus: `<img src="data/images/dog_waving.png" height="200">
@@ -56,23 +57,20 @@ var welcome = {
     choices: ['Begin']
 }
 
+// instructions at the beginning of the experiment
 var instructions = {
     type: 'html-button-response',
     stimulus: `<h1>Instructions</h1>
-    <p align="justify">You will watch a set of short videos and play a guessing game.
-    Your task is to carefully watch several videos and _________.</p>
+    <p align="justify">You will watch a set of short videos and play a guessing game.</p>
 
     <p align="justify">The video are split into blocks with attention-getting slides in-between.</p>
 
     <p align="justify">Each video will only be played once, so make sure you pay close attention to the entire video.
-    After the video, you have 40 seconds to enter your response. If you did not enter a valid answer after 40 seconds, the next trial will start.
-    If you <b>miss 5 consecutive trials</b>, the study will automatically stop.</p>
-
-    <p align="justify">The study session will last 20 min, please make sure you have enough time to finish the study in one session.
-    There will be no breaks in between.</p>`,
+    After the video, you have 40 seconds to enter your response. If you did not enter a valid answer after 40 seconds, the next trial will start.`,
     choices: ['Continue']
 }
 
+// start of video trials
 var start_videos = {
     type: 'html-button-response',
     stimulus: `<h2>Let's start the guessing verb game!</h2>
@@ -80,18 +78,29 @@ var start_videos = {
     choices: ['Start']
 }
 
+// start of new block of video trials
 var start_new_block = {
     type: 'html-button-response',
     stimulus: "<h4>Let's guess another verb, ready?</h4>",
     choices: ['Ready!']
 }
 
+// start of testing videos in a block
+var start_testing_videos = {
+    type: 'html-button-response',
+    stimulus: `Now you will see some videos one at a time.
+               <p>Can you tell us whether it describes the same verb or not?<p>`,
+    choices: ['Continue']
+}
+
+// end of video trials
 var finish_videos = {
     type: 'html-button-response',
     stimulus: `<p>You have finished the game! Please fill out the next few questions.</p>`,
     choices: ['Next']
 }
 
+// final slide that ends the experiment
 var final_slide = {
     type: 'html-button-response',
     stimulus: `<img src="data/images/peppa_george.png" height="200">
@@ -106,7 +115,7 @@ var final_slide = {
 
 // Game 1: sort images in the circle/area
 var sorting_stimuli = []
-for (var i = 0; i < 1; i++) {
+for (var i = 0; i < 2; i++) {
     sorting_stimuli.push("data/images/sun.jpg")
     sorting_stimuli.push("data/images/moon.jpg")
 }
@@ -117,12 +126,13 @@ var sorting_game = {
     border_width: 9,       // width of the border of the sort area
     stim_height: 90,       // height of the stimuli images
     stim_width: 90,        // width of the stimuli images
-    sort_area_height: 300, // height of the area that the stimuli can be moved into
-    sort_area_width: 400,  // width of the area that the stimuli can be moved into
-    prompt: `<b>Can you put the sun and moon inside the rectangle?</b>
-             <p>Try to put the sun on the left and the moon on the right.</p>`,
+    sort_area_height: 400, // height of the area that the stimuli can be moved into
+    sort_area_width: 600,  // width of the area that the stimuli can be moved into
+    prompt: `<b>Can you put the suns and moons inside the rectangle?</b>
+             <p>Try to put the suns on the left and the moons on the right.</p>`,
     counter_text_unfinished: '<i>You still need to place %n% thing%s% inside the circle.</i>',
-    counter_text_finished: '<b>Good job! You did it!</b>'
+    counter_text_finished: '<b>Good job! You did it!</b>',
+    column_spread_factor: .6 // how far away the items are placed from the sorting area
 }
 
 // Game 2: drag an image into the area
@@ -266,6 +276,10 @@ fetch(video_json_file)
             // if reached end of block for training or testing, randomize videos and add to timeline
             if (i + 1 >= stimuli_set.length || block_location[i + 1] > 0) {
                 current_block = shuffle(current_block)
+
+                // insert testing video instructions slide before testing videos
+                if (!isTrainingVideo)
+                    video_trial_timeline.push(start_testing_videos)
 
                 current_block.forEach(element => video_trial_timeline.push(element)) // add shuffled video slides to timeline
                 current_block = []
