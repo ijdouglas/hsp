@@ -34,29 +34,28 @@ config_data = config_data["Parameters"]
 
 
 
-#Location where the data is saved. Must be a folder that has subfolders for each experiment
-#Ex. .../hsp_data/exp200 has all of the exp200 experiment_data.csv
-#.../hsp_data/exp201 has all of 201 etc
-
-
-#Set to where you want the files to be saved. Program will create exp_20# folders where it will save the cleaned data and split into subfolders to hold the individual data
 
 
 ################################################################
-experiment = str(config_data['exp'])
-source_file_loc = config_data["source_file_loc"]
-save_data = int(config_data['save_files']) == 1
-target_dir = config_data["target_dir"]
-col_val = config_data["col2check"]
-target_len = config_data["minimum_responses"]
-block_ordering = config_data["block_ordering"]
-block_dictionary = config_data["block_dictionary"]
+experiment = str(config_data['exp']) #which experiment you are needed to preprocess
+source_file_loc = config_data["source_file_loc"] #location where the data is saved, e.g., folder "exp200" with all of the raw csv files inside
+save_data = int(config_data['save_files']) == 1 #boolean if you would like to save the data
+target_dir = config_data["target_dir"] #Set to where you want the files to be saved, program will create a exp_20# folder where it will save the cleaned data and individual subfolders for each subject
+col_val = config_data["col2check"] #column where the responses are
+target_len = config_data["minimum_responses"] #Minimum amount of responses for filtering
+num_responses = config_data["num_responses"] #Used to distinguish between exp205 (3 responses) and everything else
+language = config_data["language"] #What language is used, currently either "eng" or "zh"
+block_ordering = config_data["block_ordering"] #either a dictionary or null
+block_dictionary = config_data["block_dictionary"] #either a dictionary or null
 dict_201 = {"hold":1,"cut":2}
 ################################################################
 
+
+source_file_loc = source_file_loc.replace("C:","/mnt/c")
+target_dir = target_dir.replace("C:","/mnt/c")
+
 spell = SpellChecker()
 lm = WordNetLemmatizer()
-
 
 ## change this
 word_dict = {}
@@ -93,16 +92,20 @@ def header():
 
 #experiment would be "200", "201", etc
 def extract_data(dir,target_dir,experiment, save):
-    global col_val, target_len, block_ordering, block_dictionary
+    print("Starting preprocessing")
+    global col_val, target_len, block_ordering, block_dictionary, num_responses, language
+
     filtered_lean = header() #initialize the arrays
     unfiltered_lean = header()
     subject = int(experiment + "001")
 
     folder_holder = "experiment_"+experiment+"/" 
     if not os.path.isdir(target_dir+folder_holder): #Checks if the target folder exists, creates one otherwise
+        print("Created folder ",target_dir+folder_holder)
         os.mkdir(target_dir+folder_holder)
     target_dir = target_dir + folder_holder
 
+    print("Extracting from files")
     for root, dirs, files in os.walk(dir):
         dirs.sort()
         
@@ -147,12 +150,13 @@ def extract_data(dir,target_dir,experiment, save):
                                 target_id = word_dict[target]
                             
 
-                            if experiment == "200" or experiment == "201" or experiment == "203" or experiment == "206":
+                            # if experiment == "200" or experiment == "201" or experiment == "203" or experiment == "206":
+                            if block_ordering == None and num_responses == 1:
                                 trial_in_block = 0
                                 block_id = 0
                                 condition = 1
 
-                            elif experiment == "202" or experiment == "204":
+                            elif block_ordering != None and num_responses == 1:
                                 trial_in_block = 0
                                 block_id = block_dictionary[target]
                                 trial_in_block = trial_id%6
@@ -164,13 +168,13 @@ def extract_data(dir,target_dir,experiment, save):
                                     elif block_dictionary[target] == 3:
                                         condition = 2
 
-                            if experiment != "205":
+                            if num_responses == 1:
                                 top_choice = 0
-                                if experiment != "206":
+                                if language == "eng":
                                     guess = basic_corrections(filename["words"][0].strip())
                                     corrected = spell.correction(guess)
                                     lemma = lm.lemmatize(corrected, wn.VERB)
-                                else:
+                                elif language == "zh":
                                     guess = filename["words"][0].strip()
                                     lemma = HanziConv.toSimplified(guess).strip()
                                 
@@ -196,7 +200,7 @@ def extract_data(dir,target_dir,experiment, save):
                                 slim_data.append(slim_row)
                                 trial_id+=1
 
-                            elif experiment == "205":
+                            elif num_responses == 3:
                                 guesses = filename["words"]
                                 top_choice = 1
                                 if target != last_target:
@@ -250,7 +254,7 @@ def extract_data(dir,target_dir,experiment, save):
                 length = len(slim_data[1:])
                 for row in slim_data[1:]:
                     unfiltered_lean.append(row)
-                if experiment in ["200", "201", "203", "205", "206"]:
+                if block_ordering == None:
                     if length >target_len:
                         df = pd.DataFrame(data =slim_data[1:], columns = slim_data[0])
                         entries = df.values
@@ -273,13 +277,15 @@ def extract_data(dir,target_dir,experiment, save):
                         if experiment =="206":
                             print()
                             temp2 = pd.read_csv(os.path.join(root,file))
-                            print(temp2)
-                            responses = temp2["responses"].dropna()
-                            print(responses)
-                elif experiment in ["202","204"]:
+                            if "responses" in temp2.columns:
+                                responses = temp2["responses"].dropna()
+                            else:
+                                print(temp2)
+                                print(os.path.join(root,file))
+                elif block_ordering != None:
                     if length >target_len:
                         df = pd.DataFrame(data =slim_data[1:], columns = slim_data[0])
-                        order = block_ordering[np.unique(df["block_id"].values)[0]]
+                        order = block_ordering[str(np.unique(df["block_id"].values)[0])]
                         for val in order:
                             entries = df.loc[df["block_id"]==val]["guess"].values
                             valid = entries[entries != "N/A"]
@@ -301,7 +307,7 @@ def extract_data(dir,target_dir,experiment, save):
 
     today = datetime.today()
     Date = today.strftime("%d-%m-%Y")
-
+    print("Consolidating into per-experiment csv")
     filt_lean = target_dir+"exp"+experiment+"_lean_filt_"+Date+".csv"
     write_data(filtered_lean, filt_lean)
 
@@ -309,6 +315,7 @@ def extract_data(dir,target_dir,experiment, save):
     write_data(unfiltered_lean,unfilt_lean)
 
 extract_data(source_file_loc, target_dir, experiment, save_data )
+print("Done\n")
 
 if len(not_in) != 0:
     print("Items not in dictionary:", not_in)
