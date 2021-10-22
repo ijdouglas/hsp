@@ -1,0 +1,11 @@
+{"Parameters":{
+    "exp":204,
+    "source_file_loc":"C:/Users/wkw/Documents/Yu_lab/hsp_data/exp204",
+    "target_dir":"C:/Users/wkw/Documents/Yu_lab/hsp_data/",
+    "save_files":1,
+    "col2check":11,
+    "minimum_responses":33,
+    "block_ordering":{1:[1,2,3,4,5,6,7,8,9,10,11],2:[3,11,10,1,9,5,8,7,6,4,2]},
+    "block_dictionary":{"shake":1,"hold":2,"eat":3,"fall":4,"drive":5,"turn":6,"put":7,"cut":8,"fit":9,"knock":10,"stack":11}
+    }
+}

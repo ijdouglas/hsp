@@ -1,0 +1,11 @@
+{"Parameters":{
+    "exp":200,
+    "source_file_loc":"C:/Users/wkw/Documents/Yu_lab/hsp_data/exp200",
+    "target_dir":"C:/Users/wkw/Documents/Yu_lab/hsp_data/",
+    "save_files":1,
+    "col2check":11,
+    "minimum_responses":25,
+    "block_ordering":null,
+    "block_dictionary":null
+    }
+}
