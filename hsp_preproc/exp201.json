@@ -6,6 +6,8 @@
     "col2check":9,
     "minimum_responses":33,
     "block_ordering":null,
-    "block_dictionary":null
+    "block_dictionary":null,
+    "num_responses":1,
+    "language":"eng"
     }
 }

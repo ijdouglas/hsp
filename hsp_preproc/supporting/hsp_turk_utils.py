@@ -163,4 +163,4 @@ def update_dict(not_in, maxx, word_dict):
             word_dict[item] = maxx
     for key in word_dict:
         new_dict.append([key,word_dict[key]])
-    write_data(new_dict,"hsp_voc.csv")
+    write_data(new_dict,"supporting/hsp_voc.csv")
