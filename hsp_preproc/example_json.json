@@ -1,0 +1,16 @@
+{"Parameters":{
+    "exp": "experiment number, should be int",
+    "source_file_loc":"path/to/source/file/location/",
+    "target_dir":"path/to/where/you/want/to/save/",
+    "save_files": "1/0, 0 just generates combined spreadsheet, 1 creates individual subject sheets",
+    "col2check": "index of which column subjects' responses are in, usually 11 (count from 0)",
+    "minimum_responses": "min number of responses, should be int",
+    "block_ordering": "only used in block design, see others for examples",
+    "block_dictionary": "see above",
+    "num_responses": "number of responses per video, either 1 or 3",
+    "language":"So far, only eng/zh",
+    "vid_to_replace":["An array of things to replace in the video file string, should only leave sth.mp3","data/final_selection/","random_baseline_1/"],
+    "filename_format": "what the program looks for to identify data files, usually 'experiment' or 'baseline_en' ",
+    "change_mnt": "Not used, only for unix/windows subsystem"
+    }
+}

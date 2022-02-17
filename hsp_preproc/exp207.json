@@ -3,11 +3,14 @@
     "source_file_loc":"C:/Users/wkw/Documents/Yu_lab/hsp_data/exp207",
     "target_dir":"C:/Users/wkw/Documents/Yu_lab/hsp_data/",
     "save_files":1,
-    "col2check":11,
+    "col2check":10,
     "minimum_responses":33,
     "block_ordering":null,
     "block_dictionary":null,
     "num_responses":1,
-    "language":"zh"
+    "language":"zh",
+    "vid_to_replace":["data/global_id/"],
+    "filename_format": "experiment",
+    "change_mnt":0
     }
 }

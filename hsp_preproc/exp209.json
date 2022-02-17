@@ -1,0 +1,16 @@
+{"Parameters":{
+    "exp":209,
+    "source_file_loc":"C:/Users/wkw/Desktop/exp209",
+    "target_dir":"C:/Users/wkw/Desktop/proc/",
+    "save_files":1,
+    "col2check":10,
+    "minimum_responses":21,
+    "block_ordering":null,
+    "block_dictionary":null,
+    "num_responses":1,
+    "language":"zh",
+    "vid_to_replace": ["./data/global_id/"],
+    "filename_format": "baseline_ch",
+    "change_mnt":0
+    }
+}

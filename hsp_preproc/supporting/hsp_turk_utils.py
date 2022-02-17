@@ -9,7 +9,7 @@ short_verbs = ["be","go","do","up","ax","tip","ace","man","ice","end","air","eye
 
 #You can add certain words or phrases that you want to convert to "N/A" in the basic corrections function
 filters = ["don't k ow","idk","im not sure"," ","i really dont know",'no idea',"i have no clue","not sure again","no clue","asdasd","winne","sup","verb","njnn","bute","dunno"]
-replacements = ["?"," to bed"," back"," hair"," up"," with","-up"," on"," top"," over"," around","to "," go"," is","it ","go ",","," into","inside"," in"," them"," knock"," stack"," blocks"," the ball"," there"," the"," it"," noise"," down for"," down"," things","\\"," off"," out","-you","don't"] #put inside -> putside
+replacements = [" at","?"," to bed"," back"," hair"," up"," with","-up"," on"," top"," over"," around","to "," go"," is","it ","go ",","," into","inside"," in"," them"," knock"," stack"," blocks"," the ball"," there"," the"," it"," noise"," down for"," down"," things","\\"," off"," out","-you","don't", " phone call"] #put inside -> putside
 
 
 #Called before the spell-check function, manual changes so that it doesn't get added to the dictionary
@@ -20,6 +20,10 @@ def basic_corrections(guess):
         guess = "fall"
     elif guess == "movre":
         guess = "move"
+    elif guess == "wera":
+        guess = "wear"
+    elif guess == "thinl":
+        guess = "think"
     elif guess == "holf" or guess == "hild" or guess == "wold" or guess == "h old":
         guess = "hold"
     elif guess == "trun":
@@ -126,30 +130,33 @@ def blinder(unblinded):
     return str(vid_database.loc[(vid_database["old_filename"]==i2)].values[0][13])
 
 #Since the naming schemes changed between the different conditions, different methods are needed to extract the video file or verb from a given csv file
-def extract_video(word, experiment):
+def extract_video(word, array):
     word = word.replace("sample/","")
     word = word.replace("hammer/h/","")
-    if experiment == "204": #turk video syntax
-        word = word.replace("../hsp_verbs_mturk12/data/new_vocaloid_clips/","")
-    elif experiment == "201": #baseline video
-        word = word.replace("../hsp_verbs_mturk3/","")
-        word = word.replace("data/final_selection/","")
-        word = word[word.find("/")+1:]
-    elif experiment == "202": #cond45
-        word = word.replace("data/final_selection/","")
-        word = word.replace("../hsp_verbs_mturk3/","")
-        word = word[word.find("/")+1:]
-    elif experiment == "200": #rand_baseline
-        word = word.replace("data/blinded/","")
-        word = word.replace("data/final_selection/","")
-        word = word.replace("random_baseline_1/","")
-        word = word[word.find("/")+1:]
-    elif experiment == "203":
-        word = word.replace("./data/global_id_ver/","")
-    elif experiment == "206":
-        word = word.replace("./data/global_id/","")
-    elif experiment == "205":
-        word = word.replace("data/vid_files/","")
+
+    for item in array:
+        word = word.replace(item, "")
+    # if experiment == "204": #turk video syntax
+    #     word = word.replace("../hsp_verbs_mturk12/data/new_vocaloid_clips/","")
+    # elif experiment == "201": #baseline video
+    #     word = word.replace("../hsp_verbs_mturk3/","")
+    #     word = word.replace("data/final_selection/","")
+    #     word = word[word.find("/")+1:]
+    # elif experiment == "202": #cond45
+    #     word = word.replace("data/final_selection/","")
+    #     word = word.replace("../hsp_verbs_mturk3/","")
+    #     word = word[word.find("/")+1:]
+    # elif experiment == "200": #rand_baseline
+    #     word = word.replace("data/blinded/","")
+    #     word = word.replace("data/final_selection/","")
+    #     word = word.replace("random_baseline_1/","")
+    #     word = word[word.find("/")+1:]
+    # elif experiment == "203":
+    #     word = word.replace("./data/global_id_ver/","")
+    # elif experiment == "206":
+    #     word = word.replace("./data/global_id/","")
+    # elif experiment == "205":
+    #     word = word.replace("data/vid_files/","")
     return word
     
 

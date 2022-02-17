@@ -31,7 +31,7 @@ config_file = int(input("Which config file would you like to use? (type index nu
 print(os.path.isfile(jsons[config_file]))
 config_data = json.load(open(os.getcwd()+"/"+jsons[config_file]))
 config_data = config_data["Parameters"]
-
+print(config_data)
 
 
 
@@ -48,11 +48,13 @@ language = config_data["language"] #What language is used, currently either "eng
 block_ordering = config_data["block_ordering"] #either a dictionary or null
 block_dictionary = config_data["block_dictionary"] #either a dictionary or null
 dict_201 = {"hold":1,"cut":2}
+filename_format = config_data["filename_format"]
+vid_to_replace = config_data["vid_to_replace"]
 ################################################################
 
-
-source_file_loc = source_file_loc.replace("C:","/mnt/c")
-target_dir = target_dir.replace("C:","/mnt/c")
+if config_data["change_mnt"]:
+    source_file_loc = source_file_loc.replace("C:","/mnt/c")
+    target_dir = target_dir.replace("C:","/mnt/c")
 
 spell = SpellChecker()
 lm = WordNetLemmatizer()
@@ -110,7 +112,7 @@ def extract_data(dir,target_dir,experiment, save):
         dirs.sort()
         
         for file in files:
-            if ("exp"+experiment) in root and "ignore" not in file and "experiment" in file:
+            if ("exp"+experiment) in root and "ignore" not in file and filename_format in file:
                 if experiment == "205":
                     condition = int(root[root.find("cond")+4])
                     first_words = ["stack","hold","stack","hold"]
@@ -118,6 +120,10 @@ def extract_data(dir,target_dir,experiment, save):
                     trial_id = 1
                     block_id = 1
                     trial_in_block = 1
+
+                print()
+                print(file)
+                print()
 
                 temp = list(csv.reader(open(os.path.join(root,file), encoding="utf8"))) #loads csv
                 source_file = os.path.join(root, file)
@@ -128,14 +134,17 @@ def extract_data(dir,target_dir,experiment, save):
                 onset = 30 #onset info for matlab
                 offset = float(36.9800)
 
-                ip = file[:file.find("_")]
+                # ip = file[:file.find("_")]
                 for row in temp:
                     if row[0] != "rt" and len(row[col_val])!= 0: #used to ignore the first row
                         #below grabs the different information from the file
                         filename = json.loads(row[col_val])
                         video = filename["video"]
                         if "sample" not in video:
-                            trial = extract_video(video,experiment)
+                            trial = extract_video(video,vid_to_replace)
+                            # print(video)
+                            # trial = video.replace(vid_to_replace,"")
+                            # print(trial)
                             if "_" in trial:
                                 target = trial[:trial.find("_")]
                                 global_id = blinder(trial)
@@ -246,7 +255,8 @@ def extract_data(dir,target_dir,experiment, save):
                 if save == 1:
                     sio.savemat(savestring, final_structure)
                     write_data(slim_data,given+"/cleaned_data.csv")
-                    os.system("cp "+source_file+" "+given+"/raw_data.csv")
+                    # print("cp "+source_file+" "+given+"/raw_data.csv")
+                    # os.system("cp "+source_file+" "+given+"/raw_data.csv")
                 subject+=1
 
                 #Filtering part, checks if it fulfills a given length

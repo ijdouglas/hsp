@@ -8,6 +8,9 @@
     "block_ordering":null,
     "block_dictionary":null,
     "num_responses":1,
-    "language":"eng"
+    "language":"eng",
+    "vid_to_replace":["data/blinded/","data/final_selection/","random_baseline_1/"],
+    "filename_format": "experiment",
+    "change_mnt":0
     }
 }
