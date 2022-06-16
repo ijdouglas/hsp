@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Verb guessing game</title>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/jspsych.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-html-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-free-sort.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-video-button-response.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-survey-html-form.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.3.1/plugins/jspsych-fullscreen.js"></script>
+    <link href="https://cdn.jsdelivr.net/gh/jspsych/jsPsych@6.1.0/css/jspsych.css" rel="stylesheet" type="text/css">
+    <script src="./hsp.js"></script>
+    </link>
+</head>
+
+<body>
+</body>
+
+<script>
+    var ID;
+    // get the client IP address
+    var req = new XMLHttpRequest();
+    req.overrideMimeType("application/json");
+    req.open('GET', 'https://jsonip.com', false);
+    req.onload = function () {
+        var jsonResponse = JSON.parse(req.responseText);
+        ID = jsonResponse["ip"].replace(new RegExp(':', 'g'), "-")
+    };
+    req.send(null);
+
+    console.log(ID)
+    fetch(video_json_file) 
+        .then(res => res.json())
+        .then(data => {
+            
+            var timeline = []
+
+            //timeline.push(enter_fullscreen)
+
+            /////////////////////////////////
+            // Opening information slides //
+            ///////////////////////////////
+
+            timeline.push(welcome)
+            timeline.push(instructions)
+
+
+            //////////////////
+            // Intro Games //
+            ////////////////
+
+            timeline.push(sorting_game)
+            timeline.push(drag_image_game)
+
+
+            ///////////////////
+            // Video trials //
+            /////////////////
+
+            timeline.push(start_videos)
+
+            // add all video trials & attention getting slides to the timeline
+            video_trial_timeline.forEach(element => timeline.push(element))
+
+            timeline.push(finish_videos)
+
+
+            ////////////////
+            // Questions //
+            //////////////
+
+            timeline.push(ask_name)
+            timeline.push(ask_age)
+            timeline.push(ask_date)
+            timeline.push(ask_ID)
+
+
+            timeline.push(final_slide)
+            //timeline.push(exit_fullscreen)
+
+
+            jsPsych.data.addProperties({ subject: ID });
+
+            jsPsych.init({
+                timeline: timeline,
+                // preload_video: stimuli_set,
+                show_preload_progress_bar: false,
+                on_finish: function () { saveData(ID + "_experiment_data", jsPsych.data.get().csv()); },
+                on_trial_start: function (data) {
+                    console.log("trial started")
+                }
+            })
+        })
+
+
+</script>
+
+</html>
