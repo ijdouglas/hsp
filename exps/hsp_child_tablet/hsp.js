@@ -1,9 +1,9 @@
 
 /*  NOTES for data recorded in the study:
- *  - “answer” records the responses: 1 = smile, 0 = frown
- *  - “response” is the opposite of “answer” and can be ignored since the jsPsych plugins automatically makes it store the spot of the answer chosen (0 = first answer, 1 = second answer, etc)
- *  - “accuracy” is the correctness of each answer: 1 = correct, 0 = incorrect
- *  - “verb” is the verb executed in the video
+ *  - ï¿½answerï¿½ records the responses: 1 = smile, 0 = frown
+ *  - ï¿½responseï¿½ is the opposite of ï¿½answerï¿½ and can be ignored since the jsPsych plugins automatically makes it store the spot of the answer chosen (0 = first answer, 1 = second answer, etc)
+ *  - ï¿½accuracyï¿½ is the correctness of each answer: 1 = correct, 0 = incorrect
+ *  - ï¿½verbï¿½ is the verb executed in the video
  */
 
 ////////////////
@@ -61,7 +61,7 @@ var welcome = {
 var instructions = {
     type: 'html-button-response',
     stimulus: `<h1>Instructions</h1>
-    <p align="justify">You will watch a set of short videos and play a guessing game.</p>
+    <p align="justify">You will watch a set of short videos and play a guessing game (hhhhhhhhhhhhhhhhhhhhhhhhh).</p>
 
     <p align="justify">The video are split into blocks with attention-getting slides in-between.</p>
 
