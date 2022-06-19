@@ -31,8 +31,8 @@ const gameB_image2 = '<img src="data/images/flower2.jpg" width="100" height="130
 // image html for video trials
 const a_option = '<img src="data/images/image_a_option.jpg" width="50" height="50" border="0" alt="javascript button">'
 const b_option = '<img src="data/images/image_b_option.jpg" width="50" height="50" border="0" alt="javascript button">'
-const both_option = '<img src="data/images/image_both_option.jpg" width="75" height="50" border="0" alt="javascript button">'
-const neither_option = '<img src="data/images/image_neither_option.jpg" width="100" height="50" border="0" alt="javascript button">'
+const both_option = '<img src="data/images/image_both_option.jpg" width="75" height="35" border="0" alt="javascript button">'
+const neither_option = '<img src="data/images/image_neither_option.jpg" width="100" height="25" border="0" alt="javascript button">'
 
 /////////////////////////
 // Instruction slides //
@@ -130,7 +130,7 @@ var sorting_game = {
     stim_width: 90,        // width of the stimuli images
     sort_area_height: 400, // height of the area that the stimuli can be moved into
     sort_area_width: 600,  // width of the area that the stimuli can be moved into
-    prompt: `<b>Can you put the suns and moons inside the rectangle?</b>
+    prompt: `<b>Can you put all the suns and moons inside the rectangle?</b>
              <p>Try to put the suns on the left and the moons on the right.</p>`,
     counter_text_unfinished: '<i>You still need to place %n% thing%s% inside the circle.</i>',
     counter_text_finished: '<b>Good job! You did it!</b>',
