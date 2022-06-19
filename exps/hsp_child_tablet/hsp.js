@@ -31,8 +31,8 @@ const gameB_image2 = '<img src="data/images/flower2.jpg" width="100" height="130
 // image html for video trials
 const a_option = '<img src="data/images/image_a_option.jpg" width="50" height="50" border="0" alt="javascript button">'
 const b_option = '<img src="data/images/image_b_option.jpg" width="50" height="50" border="0" alt="javascript button">'
-const both_option = '<img src="data/images/image_both_option.jpg" width="75" height="35" border="0" alt="javascript button">'
-const neither_option = '<img src="data/images/image_neither_option.jpg" width="100" height="25" border="0" alt="javascript button">'
+const both_option = '<img src="data/images/image_both_option.jpg" width="75" height="40" border="0" alt="javascript button">'
+const neither_option = '<img src="data/images/image_neither_option.jpg" width="100" height="40" border="0" alt="javascript button">'
 
 /////////////////////////
 // Instruction slides //
