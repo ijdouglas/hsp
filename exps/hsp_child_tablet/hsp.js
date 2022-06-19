@@ -29,10 +29,10 @@ const gameB_image1 = '<img src="data/images/flower1.jpg" width="100" height="130
 const gameB_image2 = '<img src="data/images/flower2.jpg" width="100" height="130" border="0" alt="javascript button">'
 
 // image html for video trials
-const a_option = '<img src="data/images/image_a_option.jpg" width="75" height="50" border="0" alt="javascript button">'
+const a_option = '<img src="data/images/image_a_option.jpg" width="50" height="50" border="0" alt="javascript button">'
 const b_option = '<img src="data/images/image_b_option.jpg" width="50" height="50" border="0" alt="javascript button">'
-const both_option = '<img src="data/images/image_both_option.jpg" width="75" height="75" border="0" alt="javascript button">'
-const neither_option = '<img src="data/images/image_neither_option.jpg" width="100" height="100" border="0" alt="javascript button">'
+const both_option = '<img src="data/images/image_both_option.jpg" width="75" height="50" border="0" alt="javascript button">'
+const neither_option = '<img src="data/images/image_neither_option.jpg" width="100" height="50" border="0" alt="javascript button">'
 
 /////////////////////////
 // Instruction slides //
