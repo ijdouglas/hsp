@@ -29,8 +29,10 @@ const gameB_image1 = '<img src="data/images/flower1.jpg" width="100" height="130
 const gameB_image2 = '<img src="data/images/flower2.jpg" width="100" height="130" border="0" alt="javascript button">'
 
 // image html for video trials
-const happy_face = '<img src="data/images/smile.jpg" width="110" height="110" border="0" alt="javascript button">'
-const sad_face = '<img src="data/images/frown.jpg" width="110" height="110" border="0" alt="javascript button">'
+const a_option = '<img src="data/images/image_a_option.jpg" width="110" height="110" border="0" alt="javascript button">'
+const b_option = '<img src="data/images/image_b_option.jpg" width="110" height="110" border="0" alt="javascript button">'
+const both_option = '<img src="data/images/image_both_option.jpg" width="110" height="110" border="0" alt="javascript button">'
+const neither_option = '<img src="data/images/image_neither_option.jpg" width="110" height="110" border="0" alt="javascript button">'
 
 /////////////////////////
 // Instruction slides //
@@ -61,7 +63,7 @@ var welcome = {
 var instructions = {
     type: 'html-button-response',
     stimulus: `<h1>Instructions</h1>
-    <p align="justify">You will watch a set of short videos and play a guessing game (hhhhhhhhhhhhhhhhhhhhhhhhh).</p>
+    <p align="justify">You will watch a set of short videos and play a guessing game.</p>
 
     <p align="justify">The video are split into blocks with attention-getting slides in-between.</p>
 
@@ -242,7 +244,7 @@ fetch(video_json_file)
                     stimulus: [stimuli_set[i]],
                     prompt: "Is this the same verb?",
                     choices: ['yes', 'no'],
-                    button_html: [happy_face, sad_face],
+                    button_html: [a_option, b_option, both_option, neither_option],
                     width: 550,
                     trial_duration: 40000,
                     response_allowed_while_playing: false,
