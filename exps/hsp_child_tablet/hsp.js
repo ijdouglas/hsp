@@ -75,15 +75,15 @@ var instructions = {
 // start of video trials
 var start_videos = {
     type: 'html-button-response',
-    stimulus: `<h2>Let's start the guessing verb game!</h2>
-               <p>You will have 40 seconds to choose a response for each video.</p>`,
+    stimulus: `<h2>Let's start watching the videos!</h2>
+               <p>You will hear a word during every video, please make sure your volume is turned up before starting.</p>`,
     choices: ['Start']
 }
 
 // start of new block of video trials
 var start_new_block = {
     type: 'html-button-response',
-    stimulus: "<h4>Let's guess another verb, ready?</h4>",
+    stimulus: "<h4>Let's learn another word, ready?</h4>",
     choices: ['Ready!']
 }
 
@@ -91,21 +91,21 @@ var start_new_block = {
 var start_testing_videos = {
     type: 'html-button-response',
     stimulus: `Now you will see some videos one at a time.
-               <p>Can you tell us whether it describes the same verb or not?<p>`,
+               <p>Select the answer choice for the word you see represented in the video.<p>`,
     choices: ['Continue']
 }
 
 // end of video trials
 var finish_videos = {
     type: 'html-button-response',
-    stimulus: `<p>You have finished the game! Please fill out the next few questions.</p>`,
+    stimulus: `<p>You are done! Please fill out the next few questions.</p>`,
     choices: ['Next']
 }
 
 // final slide that ends the experiment
 var final_slide = {
     type: 'html-button-response',
-    stimulus: `<img src="data/images/peppa_george.png" height="200">
+    stimulus: `<img src="data/images/bye_image.jpg" height="200">
                <h3>All done!</h3><p>Good job! Press the button to finish.</p>`,
     choices: ['<b>Finish</b>']
 }
