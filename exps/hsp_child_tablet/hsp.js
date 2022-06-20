@@ -130,7 +130,7 @@ var sorting_game = {
     stim_width: 90,        // width of the stimuli images
     sort_area_height: 400, // height of the area that the stimuli can be moved into
     sort_area_width: 600,  // width of the area that the stimuli can be moved into
-    prompt: `<b>Can you put all the suns and moons inside the rectangle?</b>
+    prompt: `<b>Put all the suns and moons inside the rectangle.</b>
              <p>Try to put the suns on the left and the moons on the right.</p>`,
     counter_text_unfinished: '<i>You still need to place %n% thing%s% inside the circle.</i>',
     counter_text_finished: '<b>Good job! You did it!</b>',
@@ -146,7 +146,7 @@ var drag_image_game = {
     stim_width: 100,        // width of the stimuli images
     sort_area_height: 300,  // height of the area that the stimuli can be moved into
     sort_area_width: 400,   // width of the area that the stimuli can be moved into
-    prompt: `<b>Can you move the fish inside the rectangle?</b>
+    prompt: `<b>Move the fish inside the rectangle.</b>
              <p>Try to put it at the upper right corner of the rectangle.</p>`,
     counter_text_unfinished: '',
     counter_text_finished: '<b>Good job! You did it!</b>'
@@ -167,7 +167,7 @@ var alternateImages = false
 // attention getter
 var spot_different_image_game = {
     type: 'html-button-response',
-    stimulus: '<h3>Can you find the one that is different?</h3>',
+    stimulus: '<h3>Select the one that is different.</h3>',
     choices: ['-', '-', '-', '-', '-'],
     button_html: function () {
         if (alternateImages == false) {
