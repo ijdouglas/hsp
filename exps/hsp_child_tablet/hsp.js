@@ -63,7 +63,7 @@ var welcome = {
 var instructions = {
     type: 'html-button-response',
     stimulus: `<h1>Instructions</h1>
-    <p align="justify">You will watch a set of short videos and play a guessing game.</p>
+    <p align="justify">You will watch a set of short videos and be tested on what you learned.</p>
 
     <p align="justify">The video are split into blocks with attention-getting slides in-between.</p>
 
