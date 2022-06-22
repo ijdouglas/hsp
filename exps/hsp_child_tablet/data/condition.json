@@ -5,16 +5,20 @@
         "data/vid_files/block 1 train/120537_turn_clean",
         "data/vid_files/block 1 train/120949_turn-grab_5050",
 
+        "data/vid_files/block 1 test/104800_Sprinkling_snow_a-fence.mp4",
+
         "data/vid_files/block 2 train/170524_cut_clean.mp4",
         "data/vid_files/block 2 train/170023_cut_clean.mp4",
         "data/vid_files/block 2 train/120470_cut-hold_8020.mp4",
         "data/vid_files/block 2 train/120371_cut-hold_8020.mp4",
+
+        "data/vid_files/block 2 test/8020_Pulling_top-cover_pvc-pipe.mp4",
  
         "data/vid_files/block 3 train/120077_shake_clean",
         "data/vid_files/block 3 train/121291_shake_clean",
-        "data/vid_files/block 3 train/120932_shake-give_8020"
+        "data/vid_files/block 3 train/120932_shake-give_8020",
 
-        
+        "data/vid_files/block 3 test/51861_Poking_honey.mp4"
 
     ]
 }
