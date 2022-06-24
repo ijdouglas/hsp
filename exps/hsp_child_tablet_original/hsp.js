@@ -23,10 +23,10 @@ const attention_getter_count = 2
 
 
 // image html for attention getters (alternates between game A and game B images)
-const gameA_image1 = '<img src="data/images/car.jpg" width="150" height="150" border="0" alt="javascript button">'
-const gameA_image2 = '<img src="data/images/city.jpg" width="150" height="150" border="0" alt="javascript button">'
-const gameB_image1 = '<img src="data/images/forest.jpg" width="150" height="150" border="0" alt="javascript button">'
-const gameB_image2 = '<img src="data/images/bridge.jpg" width="150" height="150" border="0" alt="javascript button">'
+const gameA_image1 = '<img src="data/images/butterfly1.jpg" width="150" height="100" border="0" alt="javascript button">'
+const gameA_image2 = '<img src="data/images/butterfly2.jpg" width="150" height="100" border="0" alt="javascript button">'
+const gameB_image1 = '<img src="data/images/flower1.jpg" width="100" height="130" border="0" alt="javascript button">'
+const gameB_image2 = '<img src="data/images/flower2.jpg" width="100" height="130" border="0" alt="javascript button">'
 
 // image html for video trials
 const happy_face = '<img src="data/images/smile.jpg" width="110" height="110" border="0" alt="javascript button">'
@@ -165,7 +165,7 @@ var alternateImages = false
 // attention getter
 var spot_different_image_game = {
     type: 'html-button-response',
-    stimulus: '<h3>Select the one that is different.</h3>',
+    stimulus: '<h3>Can you find the one that is different?</h3>',
     choices: ['-', '-', '-', '-', '-'],
     button_html: function () {
         if (alternateImages == false) {
