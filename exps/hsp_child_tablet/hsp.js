@@ -24,7 +24,7 @@ const attention_getter_count = 2
 
 // image html for attention getters (alternates between game A and game B images)
 const gameA_image1 = '<img src="data/images/cars.jpg" width="150" height="150" border="0" alt="javascript button">'
-const gameA_image2 = '<img src="data/images/city.jpg" width="150" height="150" border="0" alt="javascript button">'
+const gameA_image2 = '<img src="data/images/city.png" width="150" height="150" border="0" alt="javascript button">'
 const gameB_image1 = '<img src="data/images/bridge.jpg" width="150" height="150" border="0" alt="javascript button">'
 const gameB_image2 = '<img src="data/images/forest.jpg" width="150" height="150" border="0" alt="javascript button">'
 
