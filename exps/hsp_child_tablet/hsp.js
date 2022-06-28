@@ -54,7 +54,7 @@ var exit_fullscreen = {
 var welcome = {
     type: 'html-button-response',
     stimulus: `<img src="data/images/dog_waving.png" height="200">
-               <h2>Welcome to the verb guessing game!</h2>
+               <h2>Welcome!</h2>
                <p>Press the button to begin</p>`,
     choices: ['Begin']
 }
