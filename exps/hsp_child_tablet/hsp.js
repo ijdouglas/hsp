@@ -319,6 +319,18 @@ var ask_ID = {
     html: '<input name="ID" type="number" required="true" />'
 }
 
+var ask_ethnicity = {
+    type: 'survey-html-form',
+    preamble: 'What is your ethnicity? Select all that apply.',
+    html: "<form> <input type='checkbox' id='ethnicity1' name='ethnicity1' value='White'> <label for='ethnicity1'>White</label><br> <input type='checkbox' id='ethnicity2' name='ethnicity2' value='Black'> <label for='ethnicity2'>Black</label><br> <input type='checkbox' id='ethnicity3' name='ethnicity3' value='Asian'> <label for='ethnicity3'>Asian</label><br> <input type='checkbox' id='ethnicity4' name='ethnicity4' value='Amerindian/Alaska native'> <label for='ethnicity4'>Amerindian/Alaska native</label><br> <input type='checkbox' id='ethnicity5' name='ethnicity5' value='Native Hawaiian/Pacific Islander'> <label for='ethnicity5'>Native Hawaiian/Pacific Islander</label><br> <input type='checkbox' id='ethnicity6' name='ethnicity6' value='Other'> <label for='ethnicity6'>Other</label><br> <form>"
+}
+
+var ask_gender = {
+    type: 'survey-html-form',
+    preamble: 'What is your gender? Select one.',
+    html: "<form> <input type='radio' id='gender1' name='gender1' value='Female'><label for='gender1'>Female</label><br><input type='radio' id='gender2' name='gender2' value='Male'><label for='gender2'>Male</label><br> <input type='radio' id='gender3' name='gender3' value='Prefer not to say'><label for='gender3'>Prefer not to say</label><br> <form>"
+}
+
 
 ////////////////
 // Functions //
