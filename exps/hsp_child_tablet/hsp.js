@@ -245,7 +245,7 @@ fetch(video_json_file)
                     prompt: "Is this the same verb?",
                     choices: ['a', 'b', 'both', 'neither'],
                     button_html: [a_option, b_option, both_option, neither_option],
-                    width: 550,
+                    width: 550,   
                     trial_duration: 40000,
                     response_allowed_while_playing: false,
                     data: {
@@ -330,6 +330,7 @@ var ask_gender = {
     preamble: 'What is your gender? Select one.',
     html: "<form> <input type='radio' id='gender1' name='gender1' value='Female'><label for='gender1'>Female</label><br><input type='radio' id='gender2' name='gender2' value='Male'><label for='gender2'>Male</label><br> <input type='radio' id='gender3' name='gender3' value='Prefer not to say'><label for='gender3'>Prefer not to say</label><br> <form>"
 }
+
 
 
 ////////////////

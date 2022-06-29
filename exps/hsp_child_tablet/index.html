@@ -53,14 +53,27 @@
             
 
 
+            ///////////////////
+            // Video trials //
+            /////////////////
+
+            timeline.push(start_videos)
+
+            // add all video trials & attention getting slides to the timeline
+            video_trial_timeline.forEach(element => timeline.push(element))
+
+            timeline.push(finish_videos)
+
+
+
             ////////////////
             // Questions //
             //////////////
 
             timeline.push(ask_name)
-            timeline.push(ask_age)
-            timeline.push(ask_date)
             timeline.push(ask_ID)
+            timeline.push(ask_date)
+            timeline.push(ask_age)
             timeline.push(ask_ethnicity)
             timeline.push(ask_gender)
 
