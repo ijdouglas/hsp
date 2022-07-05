@@ -199,7 +199,9 @@ fetch(video_json_file)
 
         var current_block = [] // contains the current block of video trials (either training or testing)
         var isTrainingVideo = true
-        var training_block_verb = " " // verb of the current training block
+        var training_block_verb1 = " "
+        var training_block_verb2 = " " // verb of the current training block
+        var training_block_prop = " " // proportion of current verb, 50-50, 80-20, 100
 
         for (var i = 0; i < stimuli_set.length; i++) {
 
@@ -218,10 +220,16 @@ fetch(video_json_file)
 
             // get verb from video file name
             var file_name = baseName(stimuli_set[i])
-            var verb = file_name.split("_")[1]
+            var verb1 = file_name.split("_")[1]
+            var verb2 = file_name.split("_")[2]
+            var prop = file_name.split("_")[3]
+
+            training_block_verb1 = verb1
+            training_block_verb2 = verb2
+            training_block_prop = prop
 
             if (isTrainingVideo) { 
-                training_block_verb = verb
+                
 
                 // plugin for training videos
                 var training_video = {
@@ -232,7 +240,7 @@ fetch(video_json_file)
                     width: 550,
                     trial_ends_after_video: true,
                     response_allowed_while_playing: false,
-                    data: { verb: verb },
+                    data: { verb1: verb1 },
                     post_trial_gap: 500
                 }
                 current_block.push(training_video)
@@ -249,23 +257,38 @@ fetch(video_json_file)
                     trial_duration: 40000,
                     response_allowed_while_playing: false,
                     data: {
-                        verb: verb,
-                        training_block_verb: training_block_verb
+                        verb1: verb1,
+                        verb2: verb2,
+                        prop: prop,
+                        training_block_verb1: training_block_verb1,
+                        training_block_verb2: training_block_verb2,
+                        training_block_prop: training_block_prop
                     },
                     on_finish: function (data) {
                         // record answer in data
-                        if (data.response == 0)
-                            data.answer = 1 // happy face
-                        else {
-                            if (data.response == 1)
-                                data.answer = 0 // sad face
-                            else
-                                data.answer = -1 // did not answer before time ran out
+                        if (data.response == 0) {
+                            data.answer = 0 // a
                         }
+                        else if (data.response == 1) {
+                            data.answer = 1 // b
+                        }
+                        else if (data.response == 2) {
+                            data.answer = 2 // both
+                        }
+                        else if (data.response == 3) {
+                            data.answer = 3 // neither
+                        }
+                        else {
+                            data.answer = -1 // did not answer before time ran out
+                        }        
+                        
+                        
 
                         // record answer accuracy in data
-                        if (data.verb === data.training_block_verb && data.answer == 1 ||
-                            data.verb !== data.training_block_verb && data.answer == 0)
+                        if (data.answer == 0 && data.training_block_prop == "100" ||
+                            data.answer == 1 && data.training_block_prop == "0" ||
+                            data.answer == 2 && (data.training_block_prop == "80-20" || data.training_block_prop == "50-50") ||
+                            data.answer == 3 && data.training_block_prop == "neither")
                             data.accuracy = 1
                         else
                             data.accuracy = 0
@@ -296,9 +319,11 @@ fetch(video_json_file)
 //////////////
 
 var ask_name = {
-    type: 'survey-html-form',
-    preamble: 'What is your name?',
-    html: '<input name="name" type="text" required="true" />'
+    type: 'survey-text',
+    questions: [
+        {prompt: 'What is your name?'}
+    ]
+
 }
 
 var ask_age = {
@@ -328,7 +353,7 @@ var ask_ethnicity = {
 var ask_gender = {
     type: 'survey-html-form',
     preamble: 'What is your gender? Select one.',
-    html: "<form> <input type='radio' id='gender1' name='gender1' value='Female'><label for='gender1'>Female</label><br><input type='radio' id='gender2' name='gender2' value='Male'><label for='gender2'>Male</label><br> <input type='radio' id='gender3' name='gender3' value='Prefer not to say'><label for='gender3'>Prefer not to say</label><br> <form>"
+    html: "<form> <input type='radio' id='gender1' name='gender' value='Female'><label for='gender1'>Female</label><br><input type='radio' id='gender2' name='gender' value='Male'><label for='gender2'>Male</label><br> <input type='radio' id='gender3' name='gender' value='Prefer not to say'><label for='gender3'>Prefer not to say</label><br> <form>"
 }
 
 

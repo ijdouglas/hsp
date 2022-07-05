@@ -1,32 +1,38 @@
 {
     "block_location": [ 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0 ],
     "videos": [
-        "data/vid_files/block 1 train/120537_turn_clean.mp4",
-        "data/vid_files/block 1 train/121233_turn_clean.mp4",
-        "data/vid_files/block 1 train/120949_turn-grab_5050.mp4",
-        "data/vid_files/block 1 train/block1_train1.mp4",
-        "data/vid_files/block 1 train/block1_train2.mp4",
-        "data/vid_files/block 1 test/block1_test1.mp4",
-        "data/vid_files/block 1 test/block1_test2.mp4",
-        "data/vid_files/block 1 test/block1_test3.mp4",
-        "data/vid_files/block 1 test/block1_test4.mp4",
-        "data/vid_files/block 2 train/120371_cut-hold_8020.mp4",
-        "data/vid_files/block 2 train/120470_cut-hold_8020.mp4",
-        "data/vid_files/block 2 train/170023_cut_clean.mp4",
-        "data/vid_files/block 2 train/170524_cut_clean.mp4",
-        "data/vid_files/block 2 train/block2_train1.mp4",
-        "data/vid_files/block 2 test/block2_test1.mp4",
-        "data/vid_files/block 2 test/block2_test2.mp4",
-        "data/vid_files/block 2 test/block2_test3.mp4",
-        "data/vid_files/block 2 test/block2_test4.mp4",
-        "data/vid_files/block 3 train/120077_shake_clean.mp4",
-        "data/vid_files/block 3 train/121291_shake_clean.mp4",
-        "data/vid_files/block 3 train/120932_shake-give_8020.mp4",
-        "data/vid_files/block 3 train/block3_train1.mp4",
-        "data/vid_files/block 3 train/block3_train2.mp4",
-        "data/vid_files/block 3 test/block3_test1.mp4",
-        "data/vid_files/block 3 test/block3_test2.mp4",
-        "data/vid_files/block 3 test/block3_test3.mp4",
-        "data/vid_files/block 3 test/block3_test4.mp4"
+        "data/vid_files/block 1 train/120537_turn_grab_100.mp4",
+        "data/vid_files/block 1 train/121233_turn_grab_100.mp4",
+        "data/vid_files/block 1 train/120949_turn_grab_50-50.mp4",
+        "data/vid_files/block 1 train/train-block1_turn_grab_0.mp4",
+        "data/vid_files/block 1 train/train-block1_turn_grab_neither.mp4",
+
+        "data/vid_files/block 1 test/test-block1_turn_grab_100.mp4",
+        "data/vid_files/block 1 test/test-block1_turn_grab_0.mp4",
+        "data/vid_files/block 1 test/test-block1_turn_grab_80-20.mp4",
+        "data/vid_files/block 1 test/test-block1_turn_grab_neither.mp4",
+
+        "data/vid_files/block 2 train/120371_cut_hold_80-20.mp4",
+        "data/vid_files/block 2 train/120470_cut_hold_80-20.mp4",
+        "data/vid_files/block 2 train/170023_cut_hold_100.mp4",
+        "data/vid_files/block 2 train/170524_cut_hold_100.mp4",
+        "data/vid_files/block 2 train/train-block2_cut_hold_0.mp4",
+
+        "data/vid_files/block 2 test/test-block2_cut_hold_100.mp4",
+        "data/vid_files/block 2 test/test-block2_cut_hold_neither.mp4",
+        "data/vid_files/block 2 test/test-block2_cut_hold_50-50.mp4",
+        "data/vid_files/block 2 test/test-block2_cut_hold_0.mp4",
+
+        "data/vid_files/block 3 train/120077_shake_give_100.mp4",
+        "data/vid_files/block 3 train/121291_shake_give_100.mp4",
+        "data/vid_files/block 3 train/120932_shake_give_80-20.mp4",
+        "data/vid_files/block 3 train/train-block3_shake_give_50-50.mp4",
+        "data/vid_files/block 3 train/train-block3_shake_give_0.mp4",
+        
+        "data/vid_files/block 3 test/test-block3_shake_give_0.mp4",
+        "data/vid_files/block 3 test/test-block3_shake_give_50-50.mp4",
+        "data/vid_files/block 3 test/test-block3_shake_give_100.mp4",
+        "data/vid_files/block 3 test/test-block3_shake_give_neither.mp4"
+
     ]
 }
